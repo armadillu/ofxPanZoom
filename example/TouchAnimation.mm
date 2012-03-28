@@ -54,7 +54,8 @@ void TouchAnimation::draw(){
 			ofSetColor(255,255,255, alpha * 255);
 			ofCircle(p.x, p.y, radius);
 		ofPopStyle();
-		ofSetColor(255);
+		
+		ofSetColor(255,255,255, alpha * 255);
 		ofDrawBitmapString( "["+ofToString(p.x, 1) + ", " +  ofToString(p.y, 1) + "]", p.x, p.y);
 	}
 }
