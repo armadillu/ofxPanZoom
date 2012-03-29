@@ -14,7 +14,9 @@ void testApp::setup(){
 	ofBackground(0);
 	ofEnableAlphaBlending();
 	
-	cam.setZoom(1.0);
+	cam.setZoom(1.0f);
+	cam.setMinZoom(0.5f);
+	cam.setMaxZoom(5.0f);
 	cam.setScreenSize( ofGetWidth(), ofGetHeight() );
 	
 	grid.create();
