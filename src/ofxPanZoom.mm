@@ -216,11 +216,11 @@ void ofxPanZoom::applyConstrains(){
 		
 		if ( offset.x > bottomRightConstrain.x - xx){
 			offset.x = bottomRightConstrain.x - xx;
-			printf("ox < bottomRight = %f\n", offset.x);
+			//printf("ox < bottomRight = %f\n", offset.x);
 		}
 		if (offset.y > bottomRightConstrain.y - yy){
 			offset.y = bottomRightConstrain.y - yy;
-			printf("oy < bottomRight = %f\n", offset.y);
+			//printf("oy < bottomRight = %f\n", offset.y);
 		}
 	}
 }
