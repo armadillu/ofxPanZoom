@@ -9,11 +9,12 @@
 
 #pragma once
 
-#include "OfMain.h"
+#include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 
 #define	MAX_TOUCHES		22
+#define MIN_FINGER_DISTANCE 40.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
 
 class testApp;
 
@@ -43,16 +44,22 @@ public:
 	ofVec3f lastTouch[MAX_TOUCHES];
 
 	bool vFlip;	//of give you standard OF flipped y
+	bool viewportConstrained;
+	ofVec3f topLeftConstrain, bottomRightConstrain;
 	
 	void touchDown(ofTouchEventArgs &touch);
 	void touchMoved(ofTouchEventArgs &touch);
 	void touchUp(ofTouchEventArgs &touch);
 	void touchDoubleTap(ofTouchEventArgs &touch);
+
+	void setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ );
+	void removeViewportConstrain();
 	
 	void setMinZoom(float min){ minZoom = min;}
 	void setMaxZoom(float max){ maxZoom = max;}
 	void setZoom(float z){ zoom = z;}
 	void setVerticalFlip( bool flip){ vFlip = flip; }
+
 	
 	void setScreenSize(int x, int y);
 	bool isOnScreen(ofVec3f p);
@@ -61,4 +68,9 @@ public:
 	void reset();
 	void drawDebug();
 	ofVec3f screenToWorld(ofVec3f p);
+	
+private:
+	
+	void applyConstrains();
+	
 };

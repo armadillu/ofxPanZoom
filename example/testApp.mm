@@ -1,7 +1,6 @@
 #include "testApp.h"
 
 
-
 void testApp::setup(){	
 	// register touch events
 	ofRegisterTouchEvents(this);
@@ -18,6 +17,7 @@ void testApp::setup(){
 	cam.setMinZoom(0.5f);
 	cam.setMaxZoom(5.0f);
 	cam.setScreenSize( ofGetWidth(), ofGetHeight() );
+	cam.setViewportConstrain( ofVec3f(-1000,-1500), ofVec3f(1000,1500)); //limit browseable area, in world units
 	
 	grid.create();
 }
@@ -36,6 +36,16 @@ void testApp::draw(){
 		grid.draw();
 		touchAnims.draw();
 	
+		//draw constrains
+		glColor4f(1, 0, 0, 1);
+		ofSetRectMode(OF_RECTMODE_CENTER);
+		int s = 25;
+		ofRect(-1000, -1500, s, s);
+		ofRect(1000, -1500, s, s);
+		ofRect(1000, 1500, s, s);
+		ofRect(-1000, 1500, s, s);
+		ofSetRectMode(OF_RECTMODE_CORNER);
+		glColor4f(1, 1, 1, 1);
 	cam.reset();	//back to normal ofSetupScreen() projection
 	
 	cam.drawDebug(); //see info on ofxPanZoom status

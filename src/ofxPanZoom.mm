@@ -23,6 +23,7 @@ ofxPanZoom::ofxPanZoom(){
 	offset.x = offset.y = 0;
 
 	vFlip = true;
+	viewportConstrained = false;
 }
 
 void ofxPanZoom::setScreenSize(int x, int y){
@@ -34,7 +35,7 @@ void ofxPanZoom::setScreenSize(int x, int y){
 }
 
 
-bool ofxPanZoom::isOnScreen( ofVec3f p ){	///gets point in gl coords, retun
+bool ofxPanZoom::isOnScreen( ofVec3f p ){	///gets point in gl coords, not screen coords
 	
 	if ( p.x > topLeft.x && p.x < bottomRight.x 
 		 &&
@@ -84,7 +85,7 @@ void ofxPanZoom::reset(){
 
 void ofxPanZoom::lookAt( ofVec3f p ){
 	offset.x = -p.x;
-	offset.y = p.y;
+	offset.y = -p.y;
 }
 
 
@@ -142,13 +143,14 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	ofVec3f p, now;
 	double d;
 	
-	printf("####### touchMoved %d (zoomdif: %f) \n", touch.id, zoomDiff);
+	//printf("####### touchMoved %d (zoomdif: %f) \n", touch.id, zoomDiff);
 	switch ( touch.numTouches ) {
 
 		case 1:
 			// 1 finger >> pan
 			p = lastTouch[touch.id] - ofVec3f(touch.x,touch.y) ;
 			offset = offset - p * (1.0 / zoom);
+			applyConstrains();
 			break;
 
 		case 2:
@@ -159,24 +161,27 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 			
 			// 2 fingers >> zoom
 			d = lastTouch[0].distance( lastTouch[1] );
-			
-			//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
-			if ( zoomDiff > 0 ){
-				zoom *= ( d / zoomDiff ) ;
-				zoom = ofClamp( zoom, minZoom, maxZoom );
-				float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
-				float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
-				tx -= ofGetWidth() * 0.5;
-				ty -= ofGetHeight() * 0.5;
-				//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
-				if (zoom > minZoom && zoom < maxZoom){
-					offset.x += tx * ( 1.0f - d / zoomDiff ) / zoom ;
-					offset.y += ty * ( 1.0f - d / zoomDiff ) / zoom;
+				if (d > MIN_FINGER_DISTANCE ){
+				
+				//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
+				if ( zoomDiff > 0 ){
+					zoom *= ( d / zoomDiff ) ;
+					zoom = ofClamp( zoom, minZoom, maxZoom );
+					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
+					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
+					tx -= ofGetWidth() * 0.5;
+					ty -= ofGetHeight() * 0.5;
+					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
+					if (zoom > minZoom && zoom < maxZoom){
+						offset.x += tx * ( 1.0f - d / zoomDiff ) / zoom ;
+						offset.y += ty * ( 1.0f - d / zoomDiff ) / zoom;
+					}
+					//printf(" zoom after %f \n", zoom);
 				}
-				//printf(" zoom after %f \n", zoom);
-			}
 
-			zoomDiff = d;
+				zoomDiff = d;
+				applyConstrains();
+			}
 			break;
 	
 		default:
@@ -202,3 +207,38 @@ void ofxPanZoom::touchDoubleTap(ofTouchEventArgs &touch){
 
 }
 
+void ofxPanZoom::setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ ){
+	viewportConstrained = true;
+	topLeftConstrain = topLeftConstrain_;
+	bottomRightConstrain = bottomRightConstrain_;
+}
+
+void ofxPanZoom::removeViewportConstrain(){
+	viewportConstrained = false;	
+}
+
+void ofxPanZoom::applyConstrains(){
+	
+	if (viewportConstrained){
+		float xx = screenSize.x * 0.5f * (1.0f /  zoom);
+		float yy = screenSize.y * 0.5f * (1.0f /  zoom);
+
+		if ( offset.x < topLeftConstrain.x + xx){ 
+			offset.x = topLeftConstrain.x + xx;
+			//printf("ox < topleft = %f\n", offset.x);
+		}
+		if( offset.y < topLeftConstrain.y + yy ){
+			offset.y = topLeftConstrain.y + yy;
+			//printf("oy < topleft = %f\n", offset.y);
+		}
+		
+		if ( offset.x > bottomRightConstrain.x - xx){
+			offset.x = bottomRightConstrain.x - xx;
+			printf("ox < bottomRight = %f\n", offset.x);
+		}
+		if (offset.y > bottomRightConstrain.y - yy){
+			offset.y = bottomRightConstrain.y - yy;
+			printf("oy < bottomRight = %f\n", offset.y);
+		}
+	}
+}
