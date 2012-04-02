@@ -20,7 +20,7 @@ ofxPanZoom::ofxPanZoom(){
 	minZoom = 0.1f;
 	maxZoom = 10.0f;	
 	zoomDiff = -1.0f;
-	offset.x = offset.y = 0;
+	offset.x = offset.y = 0.0f;
 
 	vFlip = true;
 	viewportConstrained = false;
@@ -30,7 +30,7 @@ void ofxPanZoom::setScreenSize(int x, int y){
 	
 	screenSize.x = x;
 	screenSize.y = y;
-	topLeft = screenToWorld( ofVec3f(0, 0) );
+	topLeft = screenToWorld( ofVec3f(0.0f, 0.0f) );
 	bottomRight = screenToWorld( screenSize );
 }
 
@@ -51,27 +51,9 @@ void ofxPanZoom::apply(){
 	float w = ofGetWidth() * 0.5f / zoom;
 	float h = ofGetHeight() * 0.5f / zoom;
 
-	//old custom projection code
-	
-//	glMatrixMode(GL_PROJECTION);
-//	glLoadIdentity();
-//	//glScalef( zoom, zoom, zoom );
-//	glOrthof(	- w - offset.x + zoomOffset.y, 
-//				w - offset.x + zoomOffset.x,
-//				- h + offset.y + zoomOffset.x,
-//				h + offset.y + zoomOffset.y,
-//				-10, 10);
-//	
-//	glMatrixMode(GL_MODELVIEW);
-//	glLoadIdentity();
-//
-//	//flip OF style
-//	if (vFlip) glScalef(1, -1, 1);
-//	//glTranslatef(0, 0, 0);
-
-	ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), (ofOrientation) ofxiPhoneGetOrientation(), true, -10, 10);
+	ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f);
 	glScalef( zoom, zoom, zoom);
-	glTranslatef( offset.x + w + zoomOffset.x, offset.y + h + zoomOffset.y, 0 );	
+	glTranslatef( offset.x + w + zoomOffset.x, offset.y + h + zoomOffset.y, 0.0f );	
 	
 	//recalc visible box
 	topLeft = screenToWorld( ofVec3f() );
@@ -90,9 +72,9 @@ void ofxPanZoom::lookAt( ofVec3f p ){
 
 
 ofVec3f ofxPanZoom::screenToWorld( ofVec3f p ){
-	double f = 1.0 / zoom;
-	p.x =  f * p.x - f * ofGetWidth() * 0.5 - offset.x ;
-	p.y =  f * p.y - f * ofGetHeight() * 0.5 - offset.y ;
+	float f = 1.0f / zoom;
+	p.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
+	p.y =  f * p.y - f * ofGetHeight() * 0.5f - offset.y ;
 	return p;
 }
 
@@ -102,14 +84,14 @@ void ofxPanZoom::drawDebug(){
 	for (int i = 0; i < MAX_TOUCHES; i++){
 		if (touching[i]) glColor4f(0, 1, 0, 1);
 		else glColor4f(1, 0, 0, 1);
-		double w = 8;
+		float w = 8;
 		ofRect( i * (w + 3), 3, w, w);
 	}
 	
 	char msg[1000];
 	sprintf(msg, " zoom: %.1f \n offset: %.1f, %.1f \n ", zoom, offset.x, offset.y);
 	glColor4f(1, 1, 1, 1);
-	ofDrawBitmapString(msg, 3, 25);
+	ofDrawBitmapString(msg, 3.0f, 25.0f);
 }
 
 
@@ -141,7 +123,7 @@ void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
 void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	
 	ofVec3f p, now;
-	double d;
+	float d;
 	
 	//printf("####### touchMoved %d (zoomdif: %f) \n", touch.id, zoomDiff);
 	switch ( touch.numTouches ) {
@@ -149,7 +131,7 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 		case 1:
 			// 1 finger >> pan
 			p = lastTouch[touch.id] - ofVec3f(touch.x,touch.y) ;
-			offset = offset - p * (1.0 / zoom);
+			offset = offset - p * (1.0f / zoom);
 			applyConstrains();
 			break;
 
@@ -169,8 +151,8 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 					zoom = ofClamp( zoom, minZoom, maxZoom );
 					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
-					tx -= ofGetWidth() * 0.5;
-					ty -= ofGetHeight() * 0.5;
+					tx -= ofGetWidth() * 0.5f;
+					ty -= ofGetHeight() * 0.5f;
 					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
 					if (zoom > minZoom && zoom < maxZoom){
 						offset.x += tx * ( 1.0f - d / zoomDiff ) / zoom ;
@@ -199,7 +181,7 @@ void ofxPanZoom::touchUp(ofTouchEventArgs &touch){
 	lastTouch[touch.id].x = touch.x;
 	lastTouch[touch.id].y = touch.y;
 	if (touch.id == 0 || touch.id == 1)
-		zoomDiff = -1;
+		zoomDiff = -1.0f;
 }
 
 
