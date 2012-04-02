@@ -40,7 +40,7 @@ void TouchAnimation::draw(){
 		touch t = touches[i];
 		ofVec2f p = touches[i].pos;
 		float lifePercent = (TOUCH_ANIM_DURATION - t.time) / TOUCH_ANIM_DURATION; //[0..1]
-		float radius = TOUCH_ANIM_RADIUS * ( 0.2f + 0.8f * lifePercent);
+		float radius = TOUCH_ANIM_RADIUS * lifePercent;
 		float alpha = 1.0f;
 		if ( lifePercent < 0.5f){
 			alpha = 1.0f;
@@ -50,7 +50,7 @@ void TouchAnimation::draw(){
 
 		ofPushStyle();
 			ofNoFill();
-			ofSetLineWidth(2);
+			ofSetLineWidth(1);
 			ofSetColor(255,255,255, alpha * 255);
 			ofCircle(p.x, p.y, radius);
 		ofPopStyle();

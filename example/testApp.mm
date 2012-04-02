@@ -1,5 +1,7 @@
 #include "testApp.h"
 
+int limitX = 1000;
+int limitY = 1500;
 
 void testApp::setup(){	
 	// register touch events
@@ -17,7 +19,7 @@ void testApp::setup(){
 	cam.setMinZoom(0.5f);
 	cam.setMaxZoom(5.0f);
 	cam.setScreenSize( ofGetWidth(), ofGetHeight() );
-	cam.setViewportConstrain( ofVec3f(-1000,-1500), ofVec3f(1000,1500)); //limit browseable area, in world units
+	cam.setViewportConstrain( ofVec3f(-limitX, -limitY), ofVec3f(limitX, limitY)); //limit browseable area, in world units
 	
 	grid.create();
 }
@@ -36,16 +38,15 @@ void testApp::draw(){
 		grid.draw();
 		touchAnims.draw();
 	
-		//draw constrains
-		glColor4f(1, 0, 0, 1);
-		ofSetRectMode(OF_RECTMODE_CENTER);
+		//draw constrains		
 		int s = 25;
-		ofRect(-1000, -1500, s, s);
-		ofRect(1000, -1500, s, s);
-		ofRect(1000, 1500, s, s);
-		ofRect(-1000, 1500, s, s);
-		ofSetRectMode(OF_RECTMODE_CORNER);
+		glColor4f(1, 0, 0, 1);
+		ofRect(-limitX , -limitY , 2 * limitX, s);
+		ofRect(limitX - s , -limitY , s, 2 * limitY);
+		ofRect(-limitX , limitY - s , s, -2 * limitY);	
+		ofRect(limitX , limitY - s, -2 * limitX, s);		
 		glColor4f(1, 1, 1, 1);
+	
 	cam.reset();	//back to normal ofSetupScreen() projection
 	
 	cam.drawDebug(); //see info on ofxPanZoom status
@@ -76,6 +77,8 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 
 void testApp::touchDoubleTap(ofTouchEventArgs &touch){
 	cam.touchDoubleTap(touch); //fw event to cam
+	cam.setZoom(1.0f);	//reset zoom
+	cam.lookAt( ofVec3f() ); //reset position
 }
 
 
