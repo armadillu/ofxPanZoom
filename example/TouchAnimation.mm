@@ -53,6 +53,9 @@ void TouchAnimation::draw(){
 			ofSetLineWidth(1);
 			ofSetColor(255,255,255, alpha * 255);
 			ofCircle(p.x, p.y, radius);
+			ofFill();
+			ofSetColor(255,255,255, alpha * 128);
+			ofCircle(p.x, p.y, radius);
 		ofPopStyle();
 		
 		ofSetColor(255,255,255, alpha * 255);

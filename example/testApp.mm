@@ -1,6 +1,6 @@
 #include "testApp.h"
 
-int limitX = 1000;
+int limitX = 1000;	//these define where the camera can pan to
 int limitY = 1500;
 
 void testApp::setup(){	
@@ -14,6 +14,8 @@ void testApp::setup(){
 	
 	ofBackground(0);
 	ofEnableAlphaBlending();
+	
+	ofSetCircleResolution(32);
 	
 	cam.setZoom(1.0f);
 	cam.setMinZoom(0.5f);
@@ -38,7 +40,7 @@ void testApp::draw(){
 		grid.draw();
 		touchAnims.draw();
 	
-		//draw constrains		
+		//draw space constrains		
 		int s = 25;
 		glColor4f(1, 0, 0, 1);
 		ofRect(-limitX , -limitY , 2 * limitX, s);
@@ -52,7 +54,7 @@ void testApp::draw(){
 	cam.drawDebug(); //see info on ofxPanZoom status
 	
 	glColor4f(1,1,1,1);
-	ofDrawBitmapString("fps: " + ofToString( ofGetFrameRate() ),  10, ofGetHeight() - 10 );	
+	ofDrawBitmapString("fps: " + ofToString( ofGetFrameRate(), 1 ),  10, ofGetHeight() - 10 );	
 }
 
 
@@ -60,8 +62,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 
 	cam.touchDown(touch); //fw event to cam
 	
-	ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch to world units
-	touchAnims.addTouch( p.x, p.y);
+	ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch (in screen units) to world units
+	touchAnims.addTouch( p.x, p.y );
 }
 
 
@@ -88,6 +90,7 @@ void testApp::touchCancelled(ofTouchEventArgs& args){
 
 
 void testApp::deviceOrientationChanged(int newOrientation){
-	ofxiPhoneSetOrientation( (ofOrientation)newOrientation);
-	cam.setScreenSize(ofGetWidth(), ofGetHeight());
+	//not sure whiy this is inverted in horizontal modes, disabling for now
+	//ofxiPhoneSetOrientation( (ofOrientation)newOrientation);
+	//cam.setScreenSize(ofGetWidth(), ofGetHeight());
 };

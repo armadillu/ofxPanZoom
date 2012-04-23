@@ -13,8 +13,8 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 
-#define	MAX_TOUCHES		22
-#define MIN_FINGER_DISTANCE 40.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
+#define	MAX_TOUCHES		12
+#define MIN_FINGER_DISTANCE 50.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
 
 class testApp;
 
@@ -60,11 +60,12 @@ public:
 	void setZoom(float z){ zoom = z;}
 	void setVerticalFlip( bool flip){ vFlip = flip; }
 
+	bool fingerDown();
 	
 	void setScreenSize(int x, int y);
 	bool isOnScreen(ofVec3f p);
 	void lookAt(ofVec3f p);
-	void apply();
+	void apply(int customW = 0, int customH = 0);	//if you need to provide a viewport size (not full screen)
 	void reset();
 	void drawDebug();
 	ofVec3f screenToWorld(ofVec3f p);
