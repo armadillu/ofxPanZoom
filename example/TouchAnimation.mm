@@ -25,11 +25,12 @@ void TouchAnimation::update(float dt){
 }
 
 
-void TouchAnimation::addTouch(float x, float y){
+void TouchAnimation::addTouch(float x, float y, bool highlight){
 	
 	touch t;
 	t.pos = ofVec2f(x, y);
 	t.time = TOUCH_ANIM_DURATION;	
+	t.highlight = highlight;
 	touches.push_back(t);	
 }
 
@@ -54,7 +55,8 @@ void TouchAnimation::draw(){
 			ofSetColor(255,255,255, alpha * 255);
 			ofCircle(p.x, p.y, radius);
 			ofFill();
-			ofSetColor(255,255,255, alpha * 128);
+			if (touches[i].highlight) ofSetColor(255,0,0, alpha * 128);
+			else ofSetColor(255,255,255, alpha * 128);
 			ofCircle(p.x, p.y, radius);
 		ofPopStyle();
 		

@@ -20,12 +20,13 @@ public:
 	typedef struct touch{
 		ofVec2f pos;
 		float time;
+		bool highlight;
 	};
 	
 	vector<touch> touches;
 	
 	void update(float dt);
-	void addTouch(float x, float y);
+	void addTouch(float x, float y, bool highlight = false);
 	void draw();
 	
 };

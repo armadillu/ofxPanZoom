@@ -1,7 +1,7 @@
 #include "testApp.h"
 
-int limitX = 1000;	//these define where the camera can pan to
-int limitY = 1500;
+int canvasW = 2000;	//these define where the camera can pan to
+int canvasH = 3000;
 
 void testApp::setup(){	
 	// register touch events
@@ -14,15 +14,15 @@ void testApp::setup(){
 	
 	ofBackground(0);
 	ofEnableAlphaBlending();
-	
 	ofSetCircleResolution(32);
 	
 	cam.setZoom(1.0f);
 	cam.setMinZoom(0.5f);
 	cam.setMaxZoom(5.0f);
-	cam.setScreenSize( ofGetWidth(), ofGetHeight() );
-	cam.setViewportConstrain( ofVec3f(-limitX, -limitY), ofVec3f(limitX, limitY)); //limit browseable area, in world units
-	
+	cam.setScreenSize( ofGetWidth(), ofGetHeight() ); //tell the system how large is out screen
+	float gap = 100;
+	cam.setViewportConstrain( ofVec3f(-gap, -gap), ofVec3f(canvasW + gap, canvasH + gap)); //limit browseable area, in world units
+	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) );
 	grid.create();
 }
 
@@ -41,13 +41,23 @@ void testApp::draw(){
 		touchAnims.draw();
 	
 		//draw space constrains		
-		int s = 25;
+		glColor4f(1, 1, 1, 0.1);
+		ofRect(0, 0, canvasW, canvasH);
+		
 		glColor4f(1, 0, 0, 1);
-		ofRect(-limitX , -limitY , 2 * limitX, s);
-		ofRect(limitX - s , -limitY , s, 2 * limitY);
-		ofRect(-limitX , limitY - s , s, -2 * limitY);	
-		ofRect(limitX , limitY - s, -2 * limitX, s);		
+		ofNoFill();
+		ofSetLineWidth(2);
+		ofRect(0, 0, canvasW, canvasH);
+		ofFill();
+		ofSetLineWidth(1);
+	
+		//canvas center cross
 		glColor4f(1, 1, 1, 1);
+		ofPushMatrix();
+			ofTranslate(canvasW/2, canvasH/2);
+			ofLine(0, -60, 0, 60);
+			ofLine( -60, 0, 60,0);
+		ofPopMatrix();
 	
 	cam.reset();	//back to normal ofSetupScreen() projection
 	
@@ -63,7 +73,7 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	cam.touchDown(touch); //fw event to cam
 	
 	ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch (in screen units) to world units
-	touchAnims.addTouch( p.x, p.y );
+	touchAnims.addTouch( p.x, p.y ); 
 }
 
 
@@ -80,7 +90,7 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 void testApp::touchDoubleTap(ofTouchEventArgs &touch){
 	cam.touchDoubleTap(touch); //fw event to cam
 	cam.setZoom(1.0f);	//reset zoom
-	cam.lookAt( ofVec3f() ); //reset position
+	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) ); //reset position
 }
 
 

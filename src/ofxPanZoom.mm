@@ -39,7 +39,7 @@ bool ofxPanZoom::isOnScreen( ofVec3f p ){	///gets point in gl coords, not screen
 	
 	if ( p.x > topLeft.x && p.x < bottomRight.x 
 		 &&
-		 p.y < topLeft.y && p.y > bottomRight.y 
+		 p.y > topLeft.y && p.y < bottomRight.y
 		) return true;
 	else
 		return false;
@@ -205,7 +205,7 @@ void ofxPanZoom::touchDoubleTap(ofTouchEventArgs &touch){
 
 }
 
-void ofxPanZoom::setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ ){
+void ofxPanZoom::setViewportConstrain( ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ ){
 	viewportConstrained = true;
 	topLeftConstrain = topLeftConstrain_;
 	bottomRightConstrain = bottomRightConstrain_;
@@ -221,22 +221,18 @@ void ofxPanZoom::applyConstrains(){
 		float xx = screenSize.x * 0.5f * (1.0f /  zoom);
 		float yy = screenSize.y * 0.5f * (1.0f /  zoom);
 
-		if ( offset.x < topLeftConstrain.x + xx){ 
-			offset.x = topLeftConstrain.x + xx;
-			//printf("ox < topleft = %f\n", offset.x);
+		if ( offset.x > - (topLeftConstrain.x + xx) ){ 
+			offset.x = - (topLeftConstrain.x + xx);
 		}
-		if( offset.y < topLeftConstrain.y + yy ){
-			offset.y = topLeftConstrain.y + yy;
-			//printf("oy < topleft = %f\n", offset.y);
+		if( offset.y > - (topLeftConstrain.y + yy) ){
+			offset.y = - (topLeftConstrain.y + yy);
+		}
+		if ( offset.x < - (bottomRightConstrain.x - xx) ){
+			offset.x = - (bottomRightConstrain.x - xx);
 		}
 		
-		if ( offset.x > bottomRightConstrain.x - xx){
-			offset.x = bottomRightConstrain.x - xx;
-			//printf("ox < bottomRight = %f\n", offset.x);
-		}
-		if (offset.y > bottomRightConstrain.y - yy){
-			offset.y = bottomRightConstrain.y - yy;
-			//printf("oy < bottomRight = %f\n", offset.y);
+		if ( offset.y < - (bottomRightConstrain.y - yy) ){
+			offset.y = - (bottomRightConstrain.y - yy);
 		}
 	}
 }
