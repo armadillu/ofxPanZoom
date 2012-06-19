@@ -22,7 +22,7 @@ ofxPanZoom::ofxPanZoom(){
 	zoomDiff = -1.0f;
 	offset.x = offset.y = 0.0f;
 
-	vFlip = true;
+	//vFlip = true;
 	viewportConstrained = false;
 }
 

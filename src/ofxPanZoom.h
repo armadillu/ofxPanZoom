@@ -24,6 +24,36 @@ public:
 	
 	ofxPanZoom();
 	~ofxPanZoom(){};
+		
+	void touchDown(ofTouchEventArgs &touch);
+	void touchMoved(ofTouchEventArgs &touch);
+	void touchUp(ofTouchEventArgs &touch);
+	void touchDoubleTap(ofTouchEventArgs &touch);
+
+	void setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ );
+	void removeViewportConstrain();
+	
+	void setMinZoom(float min){ minZoom = min;} //how far out user can zoom
+	void setMaxZoom(float max){ maxZoom = max;}	//how far in user can zoom
+	void setZoom(float z){ zoom = z;}  //set a zoom level
+	//void setVerticalFlip( bool flip){ vFlip = flip; } 
+
+	bool fingerDown(); //return true if user has 1+ fingers on screen
+	float getZoom(){ return zoom; } //current zoom level
+	
+	void setScreenSize(int x, int y); //you need to provide the device screen size here
+	bool isOnScreen(ofVec3f p); //query if a point (in world units) is now visible on screen
+	void lookAt(ofVec3f p);	//set the offset to place the given point (in world units) in the middle of the screen
+	
+	void apply(int customW = 0, int customH = 0);	//customWH >> if you need to provide a viewport size (not full screen)
+	void reset(); //go back to default OF screen projection
+	void drawDebug(); //overlay camera and touches status on screen
+	
+	ofVec3f screenToWorld(ofVec3f p); //convert a point from current screen units to world units
+	
+private:
+	
+	void applyConstrains();
 	
 	ofVec3f screenSize;
 	
@@ -42,36 +72,10 @@ public:
 	
 	bool touching[MAX_TOUCHES];
 	ofVec3f lastTouch[MAX_TOUCHES];
-
+	
 	bool vFlip;	//of give you standard OF flipped y
 	bool viewportConstrained;
 	ofVec3f topLeftConstrain, bottomRightConstrain;
-	
-	void touchDown(ofTouchEventArgs &touch);
-	void touchMoved(ofTouchEventArgs &touch);
-	void touchUp(ofTouchEventArgs &touch);
-	void touchDoubleTap(ofTouchEventArgs &touch);
 
-	void setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ );
-	void removeViewportConstrain();
-	
-	void setMinZoom(float min){ minZoom = min;}
-	void setMaxZoom(float max){ maxZoom = max;}
-	void setZoom(float z){ zoom = z;}
-	void setVerticalFlip( bool flip){ vFlip = flip; }
-
-	bool fingerDown();
-	
-	void setScreenSize(int x, int y);
-	bool isOnScreen(ofVec3f p);
-	void lookAt(ofVec3f p);
-	void apply(int customW = 0, int customH = 0);	//if you need to provide a viewport size (not full screen)
-	void reset();
-	void drawDebug();
-	ofVec3f screenToWorld(ofVec3f p);
-	
-private:
-	
-	void applyConstrains();
 	
 };
