@@ -30,7 +30,7 @@ public:
 	void touchUp(ofTouchEventArgs &touch);
 	void touchDoubleTap(ofTouchEventArgs &touch);
 
-	void setViewportConstrain(ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ );
+	void setViewportConstrain(ofVec2f topLeftConstrain_, ofVec2f bottomRightConstrain_ );
 	void removeViewportConstrain();
 	
 	void setMinZoom(float min){ minZoom = min;} //how far out user can zoom
@@ -42,27 +42,27 @@ public:
 	float getZoom(){ return zoom; } //current zoom level
 	
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
-	bool isOnScreen(ofVec3f p); //query if a point (in world units) is now visible on screen
-	void lookAt(ofVec3f p);	//set the offset to place the given point (in world units) in the middle of the screen
+	bool isOnScreen(ofVec2f p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
+	void lookAt(ofVec2f p);	//set the offset to place the given point (in world units) in the middle of the screen
 	
 	void apply(int customW = 0, int customH = 0);	//customWH >> if you need to provide a viewport size (not full screen)
 	void reset(); //go back to default OF screen projection
 	void drawDebug(); //overlay camera and touches status on screen
 	
-	ofVec3f screenToWorld(ofVec3f p); //convert a point from current screen units to world units
+	ofVec2f screenToWorld(ofVec2f p); //convert a point from current screen units to world units
 	
 private:
 	
 	void applyConstrains();
 	
-	ofVec3f screenSize;
+	ofVec2f screenSize;
 	
 	//those keep the bbox of the world (in gl units) that are visible on screen
-	ofVec3f topLeft;
-	ofVec3f bottomRight;
+	ofVec2f topLeft;
+	ofVec2f bottomRight;
 	
-	ofVec3f offset;
-	ofVec3f zoomOffset;
+	ofVec2f offset;
+	ofVec2f zoomOffset;
 	float zoom;
 	
 	float minZoom;
@@ -71,11 +71,11 @@ private:
 	float zoomDiff;
 	
 	bool touching[MAX_TOUCHES];
-	ofVec3f lastTouch[MAX_TOUCHES];
+	ofVec2f lastTouch[MAX_TOUCHES];
 	
 	bool vFlip;	//of give you standard OF flipped y
 	bool viewportConstrained;
-	ofVec3f topLeftConstrain, bottomRightConstrain;
+	ofVec2f topLeftConstrain, bottomRightConstrain;
 
 	
 };

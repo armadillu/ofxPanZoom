@@ -30,16 +30,16 @@ void ofxPanZoom::setScreenSize(int x, int y){
 	
 	screenSize.x = x;
 	screenSize.y = y;
-	topLeft = screenToWorld( ofVec3f(0.0f, 0.0f) );
+	topLeft = screenToWorld( ofVec2f(0.0f, 0.0f) );
 	bottomRight = screenToWorld( screenSize );
 }
 
 
-bool ofxPanZoom::isOnScreen( ofVec3f p ){	///gets point in gl coords, not screen coords
+bool ofxPanZoom::isOnScreen( ofVec2f p, float gap ){	///gets point in gl coords, not screen coords, gap in world units too
 	
-	if ( p.x > topLeft.x && p.x < bottomRight.x 
+	if ( p.x > topLeft.x - gap && p.x < bottomRight.x + gap 
 		 &&
-		 p.y > topLeft.y && p.y < bottomRight.y
+		 p.y > topLeft.y - gap && p.y < bottomRight.y + gap
 		) return true;
 	else
 		return false;
@@ -59,8 +59,12 @@ void ofxPanZoom::apply(int customW, int customH){
 	glTranslatef( offset.x + w + zoomOffset.x, offset.y + h + zoomOffset.y, 0.0f );	
 	
 	//recalc visible box
-	topLeft = screenToWorld( ofVec3f() );
+	topLeft = screenToWorld( ofVec2f() );
 	bottomRight = screenToWorld( screenSize );
+	
+//	ofCircle(topLeft.x, topLeft.y, 20);
+//	ofCircle(bottomRight.x, bottomRight.y, 20);
+	
 }
 
 
@@ -68,7 +72,7 @@ void ofxPanZoom::reset(){
 	ofSetupScreen();	
 }
 
-void ofxPanZoom::lookAt( ofVec3f p ){
+void ofxPanZoom::lookAt( ofVec2f p ){
 	offset.x = -p.x;
 	offset.y = -p.y;
 }
@@ -85,7 +89,7 @@ bool ofxPanZoom::fingerDown(){
 	return fingerDown;
 }
 
-ofVec3f ofxPanZoom::screenToWorld( ofVec3f p ){
+ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	float f = 1.0f / zoom;
 	p.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
 	p.y =  f * p.y - f * ofGetHeight() * 0.5f - offset.y ;
@@ -135,7 +139,7 @@ void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
 
 void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	
-	ofVec3f p, now;
+	ofVec2f p, now;
 	float d;
 	
 	//printf("####### touchMoved %d (%.1f %.1f zoomdif: %f) \n", touch.id, touch.x, touch.y, zoomDiff);
@@ -145,7 +149,7 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 
 		case 1:
 			// 1 finger >> pan
-			p = lastTouch[touch.id] - ofVec3f(touch.x,touch.y) ;
+			p = lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ;
 			offset = offset - p * (1.0f / zoom);
 			applyConstrains();
 			break;
@@ -153,7 +157,7 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 		case 2:
 			
 			//pan with 2 fingers too
-			p = 0.5 * ( lastTouch[touch.id] - ofVec3f(touch.x,touch.y) ); //0.5 to average both touch offsets
+			p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
 			offset = offset - p * (1.0 / zoom);	
 			
 			// 2 fingers >> zoom
@@ -205,7 +209,7 @@ void ofxPanZoom::touchDoubleTap(ofTouchEventArgs &touch){
 
 }
 
-void ofxPanZoom::setViewportConstrain( ofVec3f topLeftConstrain_, ofVec3f bottomRightConstrain_ ){
+void ofxPanZoom::setViewportConstrain( ofVec2f topLeftConstrain_, ofVec2f bottomRightConstrain_ ){
 	viewportConstrained = true;
 	topLeftConstrain = topLeftConstrain_;
 	bottomRightConstrain = bottomRightConstrain_;
