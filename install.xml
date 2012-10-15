@@ -1,0 +1,28 @@
+<install>
+	<name>ofxPanZoom</name>
+    <version>1.0</version>
+    <author><[CDATA[Oriol Ferrer <oriol@uri.cat> ]]></author>
+   
+    <code_url>https://github.com/armadillu/ofxPanZoom</code_url>
+    <site_url>http://www.uri.cat</site_url>
+    <download_url>https://github.com/armadillu/ofxPanZoom</download_url>
+   
+    <description><![CDATA[
+          Simple OpenFrameworks add-on that handles Zooming and Panning on iDevices, allowing to explore 2D space.    ]]></description>
+    
+	<add>
+		
+		<!-- 	=====================================================================	-->
+		<!--	========================== add per project using this addon =========	-->
+		<!-- 	=====================================================================	-->
+	
+		<src>
+			<folder name="addons/ofxPanZoom/src">
+				<file>../../../addons/ofxPanZoom/src/ofxPanZoom.cpp</file>
+				<file>../../../addons/ofxPanZoom/src/ofxPanZoom.h</file>
+			</folder>
+		</src>
+		
+	</add>    
+    
+</install>

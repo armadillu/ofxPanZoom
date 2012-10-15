@@ -96,6 +96,10 @@ ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	return p;
 }
 
+ofRectangle ofxPanZoom::getCurentViewPort(){
+	return ofRectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+}
+
 
 void ofxPanZoom::drawDebug(){
 

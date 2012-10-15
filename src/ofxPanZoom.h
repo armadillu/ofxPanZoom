@@ -44,6 +44,7 @@ public:
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
 	bool isOnScreen(ofVec2f p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
 	void lookAt(ofVec2f p);	//set the offset to place the given point (in world units) in the middle of the screen
+	ofRectangle getCurentViewPort();
 	
 	void apply(int customW = 0, int customH = 0);	//customWH >> if you need to provide a viewport size (not full screen)
 	void reset(); //go back to default OF screen projection
