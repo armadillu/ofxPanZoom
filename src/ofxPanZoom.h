@@ -12,6 +12,7 @@
 #include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
+#include "ofxEasyRetina.h"
 
 #define	MAX_TOUCHES		12
 #define MIN_FINGER_DISTANCE 50.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
@@ -32,7 +33,9 @@ public:
 
 	void setViewportConstrain(ofVec2f topLeftConstrain_, ofVec2f bottomRightConstrain_ );
 	void removeViewportConstrain();
-	
+
+	void setDeviceScaleFactor(float f); //retina
+
 	void setMinZoom(float min){ minZoom = min;} //how far out user can zoom
 	void setMaxZoom(float max){ maxZoom = max;}	//how far in user can zoom
 	void setZoom(float z){ zoom = z;}  //set a zoom level
@@ -40,6 +43,7 @@ public:
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
 	float getZoom(){ return zoom; } //current zoom level
+	ofVec2f getOffset(){return offset;}
 	
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
 	bool isOnScreen(ofVec2f p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
@@ -78,5 +82,6 @@ private:
 	bool viewportConstrained;
 	ofVec2f topLeftConstrain, bottomRightConstrain;
 
+	ofxEasyRetina retinaUtils;
 	
 };
