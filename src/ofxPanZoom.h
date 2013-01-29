@@ -83,5 +83,6 @@ private:
 	ofVec2f topLeftConstrain, bottomRightConstrain;
 
 	ofxEasyRetina retinaUtils;
+	vector<int> touchIDOrder;
 	
 };

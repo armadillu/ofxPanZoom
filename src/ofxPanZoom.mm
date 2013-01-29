@@ -116,34 +116,33 @@ void ofxPanZoom::drawDebug(){
 		float w = 8;
 		ofRect( i * (w + 3), 3, w, w);
 	}
-	
+
+	string order = " touchOrder: ";
+	for (int i = 0; i < touchIDOrder.size(); i++){
+		order += ofToString( touchIDOrder[i] ) + ", ";
+	}
+
 	char msg[1000];
 	sprintf(msg, " zoom: %.1f \n offset: %.1f, %.1f \n ", zoom, offset.x, offset.y);
 	glColor4f(1, 1, 1, 1);
 	ofDrawBitmapString(msg, 3.0f, 25.0f);
+	ofDrawBitmapString(order, 3.0f, 55.0f);
 }
 
 
 void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
 
+	touchIDOrder.push_back(touch.id);
+	
 	lastTouch[touch.id].x = touch.x;
 	lastTouch[touch.id].y = touch.y;
 
 	//printf("####### touchDown %d (zoomdif: %f) %f %f \n", touch.id, zoomDiff , touch.x, touch.y);
-	
-	switch ( touch.numTouches ) {
 
-		case 1:			
-			break;
-
-		case 2:			
-			zoomDiff = lastTouch[0].distance( lastTouch[1] );
-			break;
-
-		default:
-			break;
+	if (touchIDOrder.size() >= 2){
+		zoomDiff = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
 	}
-	
+
 	touching[touch.id] = true;
 }
 
@@ -155,24 +154,25 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	
 	//printf("####### touchMoved %d (%.1f %.1f zoomdif: %f) \n", touch.id, touch.x, touch.y, zoomDiff);
 	if (touching[touch.id] == false) return;
-	
-	switch ( touch.numTouches ) {
 
-		case 1:
-			// 1 finger >> pan
-			p = lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ;
-			offset = offset - p * (1.0f / zoom);
-			applyConstrains();
-			break;
+	if (touchIDOrder.size() == 1){
 
-		case 2:
-			
+		// 1 finger >> pan
+		p = lastTouch[ touchIDOrder[0] ] - ofVec2f(touch.x,touch.y) ;
+		offset = offset - p * (1.0f / zoom);
+		applyConstrains();
+
+	}else{
+
+		if (touchIDOrder.size() >= 2){
 			//pan with 2 fingers too
-			p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
-			offset = offset - p * (1.0 / zoom);	
-			
+			if ( touchIDOrder.size() == 2 ){
+				p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
+				offset = offset - p * (1.0 / zoom);
+			}
+
 			// 2 fingers >> zoom
-			d = lastTouch[0].distance( lastTouch[1] );
+			d = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
 			if (d > MIN_FINGER_DISTANCE ){
 
 				//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
@@ -194,25 +194,31 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 				zoomDiff = d;
 				applyConstrains();
 			}
-			break;
-
-		default:
-			break;
+		}
 	}
 
 	lastTouch[touch.id].x = touch.x;
 	lastTouch[touch.id].y = touch.y;
 }
 
-
 void ofxPanZoom::touchUp(ofTouchEventArgs &touch){
-
+	
 	//printf("####### touchUp %d (zoomdif: %f) \n", touch.id, zoomDiff);
 	touching[touch.id] = false;
 	lastTouch[touch.id].x = touch.x;
 	lastTouch[touch.id].y = touch.y;
-	if (touch.id == 0 || touch.id == 1)
+
+	if ( touchIDOrder.size() >= 1) {
 		zoomDiff = -1.0f;
+	}
+
+	vector<int>::iterator it = std::find(touchIDOrder.begin(), touchIDOrder.end(), touch.id);
+	if ( it == touchIDOrder.end()){
+		//not found! wtf!
+		printf("wtf at touchup! can't found touchID %d", touch.id);
+	}else{
+		touchIDOrder.erase(it);
+	}
 }
 
 
