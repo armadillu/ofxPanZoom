@@ -2,5 +2,5 @@ Simple OpenFrameworks add-on that handles Zooming and Panning on iDevices, allow
 
 <http://vimeo.com/39365094>
 
-This now requires [ofxEasyRetina](https://github.com/armadillu/ofxEasyRetina).
+This now requires [ofxEasyRetina](https://github.com/armadillu/ofxEasyRetina) an OF0073
 
