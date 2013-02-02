@@ -215,7 +215,7 @@ void ofxPanZoom::touchUp(ofTouchEventArgs &touch){
 	vector<int>::iterator it = std::find(touchIDOrder.begin(), touchIDOrder.end(), touch.id);
 	if ( it == touchIDOrder.end()){
 		//not found! wtf!
-		printf("wtf at touchup! can't found touchID %d", touch.id);
+		printf("wtf at touchup! can't find touchID %d\n", touch.id);
 	}else{
 		touchIDOrder.erase(it);
 	}
