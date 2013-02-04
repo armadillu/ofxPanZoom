@@ -56,6 +56,7 @@ public:
 	bool viewportDidChange();
 	
 	ofVec2f screenToWorld(ofVec2f p); //convert a point from current screen units to world units
+	ofVec2f worldToScreen(ofVec2f p); //convert a point from world units to current screen units 
 	
 private:
 	

@@ -29,6 +29,11 @@ void testApp::setup(){
 
 void testApp::update(){
 	touchAnims.update(0.016f);
+
+	float amp = 900;
+	float freq = 0.2;
+	ball.x = canvasW/2 + ofNoise(freq * ofGetElapsedTimef()) * amp * cos( ofGetElapsedTimef() * freq );
+	ball.y = canvasH/2 + ofNoise(0, freq * ofGetElapsedTimef()) * amp * sin( ofGetElapsedTimef() * freq );
 }
 
 
@@ -58,9 +63,20 @@ void testApp::draw(){
 			ofLine(0, -60, 0, 60);
 			ofLine( -60, 0, 60,0);
 		ofPopMatrix();
+
+		ofSetColor(128, 0, 0);
+		ofCircle(ball, 50);
 	
 	cam.reset();	//back to normal ofSetupScreen() projection
-	
+
+	ofSetColor(255);
+	//now draw on top of our ball in "screen" coordinates
+	ofVec2f screenBall = cam.worldToScreen(ball);
+	ofDrawBitmapString( "world:  " + ofToString(ball) + "\n" +
+						"screen: " + ofToString(screenBall),
+					    screenBall + ofVec2f(60 * cam.getZoom(), 0)
+					   );
+
 	cam.drawDebug(); //see info on ofxPanZoom status
 	
 	glColor4f(1,1,1,1);

@@ -31,6 +31,8 @@ public:
 	ofxPanZoom	cam;
 	Grid grid;
 	TouchAnimation touchAnims;
+
+	ofVec2f ball;
 };
 
 

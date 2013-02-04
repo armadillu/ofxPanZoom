@@ -99,10 +99,20 @@ bool ofxPanZoom::fingerDown(){
 
 ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	float f = 1.0f / zoom;
-	p.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
-	p.y =  f * p.y - f * ofGetHeight() * 0.5f - offset.y ;
-	return p;
+	ofVec2f r;
+	r.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
+	r.y =  f * p.y - f * ofGetHeight() * 0.5f - offset.y ;
+	return r;
 }
+
+ofVec2f ofxPanZoom::worldToScreen( ofVec2f p ){
+	float f = 1.0f / zoom;
+	ofVec2f r;
+	r.x = ( p.x + f * ofGetWidth() * 0.5f + offset.x ) * zoom;
+	r.y = ( p.y + f * ofGetHeight() * 0.5f + offset.y ) * zoom;
+	return r;
+}
+
 
 
 ofRectangle ofxPanZoom::getCurentViewPort(){
@@ -132,16 +142,16 @@ void ofxPanZoom::drawDebug(){
 		ofRect( i * (w + 3), 3, w, w);
 	}
 
-	string order = " touchOrder: ";
-	for (int i = 0; i < touchIDOrder.size(); i++){
-		order += ofToString( touchIDOrder[i] ) + ", ";
-	}
+//	string order = " touchOrder: ";
+//	for (int i = 0; i < touchIDOrder.size(); i++){
+//		order += ofToString( touchIDOrder[i] ) + ", ";
+//	}
 
 	char msg[1000];
 	sprintf(msg, " zoom: %.1f \n offset: %.1f, %.1f \n ", zoom, offset.x, offset.y);
 	glColor4f(1, 1, 1, 1);
 	ofDrawBitmapString(msg, 3.0f, 25.0f);
-	ofDrawBitmapString(order, 3.0f, 55.0f);
+	//ofDrawBitmapString(order, 3.0f, 55.0f);
 }
 
 
