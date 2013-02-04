@@ -96,6 +96,7 @@ bool ofxPanZoom::fingerDown(){
 	return fingerDown;
 }
 
+
 ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	float f = 1.0f / zoom;
 	p.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
@@ -103,8 +104,22 @@ ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	return p;
 }
 
+
 ofRectangle ofxPanZoom::getCurentViewPort(){
 	return ofRectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+}
+
+
+bool ofxPanZoom::viewportDidChange(){
+	ofRectangle r = getCurentViewPort();
+	bool ret;
+	if (r == pViewport){
+		ret = false;
+	}else{
+		ret = true;
+	}
+	pViewport = r;
+	return ret;
 }
 
 

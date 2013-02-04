@@ -53,6 +53,7 @@ public:
 	void apply(int customW = 0, int customH = 0);	//customWH >> if you need to provide a viewport size (not full screen)
 	void reset(); //go back to default OF screen projection
 	void drawDebug(); //overlay camera and touches status on screen
+	bool viewportDidChange();
 	
 	ofVec2f screenToWorld(ofVec2f p); //convert a point from current screen units to world units
 	
@@ -84,5 +85,7 @@ private:
 
 	ofxEasyRetina retinaUtils;
 	vector<int> touchIDOrder;
+
+	ofRectangle pViewport;
 	
 };
