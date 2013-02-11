@@ -40,7 +40,7 @@ void ofxPanZoom::setScreenSize(int x, int y){
 }
 
 
-bool ofxPanZoom::isOnScreen( ofVec2f p, float gap ){	///gets point in gl coords, not screen coords, gap in world units too
+bool ofxPanZoom::isOnScreen( const ofVec2f & p, float gap ){	///gets point in gl coords, not screen coords, gap in world units too
 	
 	if ( p.x > topLeft.x - gap && p.x < bottomRight.x + gap 
 		 &&
@@ -48,6 +48,17 @@ bool ofxPanZoom::isOnScreen( ofVec2f p, float gap ){	///gets point in gl coords,
 		) return true;
 	else
 		return false;
+}
+
+bool ofxPanZoom::isOnScreen( const ofRectangle & r, float gap ){	///gets point in gl coords, not screen coords, gap in world units too
+
+	bool t1 = isOnScreen( r.getTopLeft() );
+	bool t2 = isOnScreen( r.getTopRight() );
+	bool t3 = isOnScreen( r.getBottomLeft() );
+	bool t4 = isOnScreen( r.getBottomRight() );
+	bool t5 = isOnScreen( r.getCenter() );
+
+	return t1 | t2 | t3 | t4 | t5;
 }
 
 
@@ -97,7 +108,7 @@ bool ofxPanZoom::fingerDown(){
 }
 
 
-ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
+ofVec2f ofxPanZoom::screenToWorld( const ofVec2f & p ){
 	float f = 1.0f / zoom;
 	ofVec2f r;
 	r.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
@@ -105,7 +116,7 @@ ofVec2f ofxPanZoom::screenToWorld( ofVec2f p ){
 	return r;
 }
 
-ofVec2f ofxPanZoom::worldToScreen( ofVec2f p ){
+ofVec2f ofxPanZoom::worldToScreen( const ofVec2f & p ){
 	float f = 1.0f / zoom;
 	ofVec2f r;
 	r.x = ( p.x + f * ofGetWidth() * 0.5f + offset.x ) * zoom;
@@ -135,6 +146,7 @@ bool ofxPanZoom::viewportDidChange(){
 
 void ofxPanZoom::drawDebug(){
 
+	ofSetRectMode(OF_RECTMODE_CORNER);
 	for (int i = 0; i < MAX_TOUCHES; i++){
 		if (touching[i]) glColor4f(0, 1, 0, 1);
 		else glColor4f(1, 0, 0, 1);

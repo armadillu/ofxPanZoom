@@ -46,7 +46,8 @@ public:
 	ofVec2f getOffset(){return offset;}
 	
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
-	bool isOnScreen(ofVec2f p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
+	bool isOnScreen(const ofVec2f & p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
+	bool isOnScreen(const ofRectangle & r, float gap = 0.0f); //query if an ofRectangle (in world units) is now visible on screen
 	void lookAt(ofVec2f p);	//set the offset to place the given point (in world units) in the middle of the screen
 	ofRectangle getCurentViewPort();
 	
@@ -55,8 +56,8 @@ public:
 	void drawDebug(); //overlay camera and touches status on screen
 	bool viewportDidChange();
 	
-	ofVec2f screenToWorld(ofVec2f p); //convert a point from current screen units to world units
-	ofVec2f worldToScreen(ofVec2f p); //convert a point from world units to current screen units 
+	ofVec2f screenToWorld(const ofVec2f & p); //convert a point from current screen units to world units
+	ofVec2f worldToScreen(const ofVec2f & p); //convert a point from world units to current screen units
 	
 private:
 	
