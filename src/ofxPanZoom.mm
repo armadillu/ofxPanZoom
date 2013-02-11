@@ -52,13 +52,8 @@ bool ofxPanZoom::isOnScreen( const ofVec2f & p, float gap ){	///gets point in gl
 
 bool ofxPanZoom::isOnScreen( const ofRectangle & r, float gap ){	///gets point in gl coords, not screen coords, gap in world units too
 
-	bool t1 = isOnScreen( r.getTopLeft() );
-	bool t2 = isOnScreen( r.getTopRight() );
-	bool t3 = isOnScreen( r.getBottomLeft() );
-	bool t4 = isOnScreen( r.getBottomRight() );
-	bool t5 = isOnScreen( r.getCenter() );
-
-	return t1 | t2 | t3 | t4 | t5;
+	ofRectangle r2 = ofRectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+	return r.intersects( r2 );
 }
 
 
@@ -78,10 +73,9 @@ void ofxPanZoom::apply(int customW, int customH){
 	//recalc visible box
 	topLeft = screenToWorld( ofVec2f() );
 	bottomRight = screenToWorld( screenSize );
-	
-//	ofCircle(topLeft.x, topLeft.y, 20);
-//	ofCircle(bottomRight.x, bottomRight.y, 20);
-	
+
+	//ofCircle(topLeft.x, topLeft.y, 20);
+	//ofCircle(bottomRight.x, bottomRight.y, 20);	
 }
 
 
