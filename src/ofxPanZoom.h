@@ -43,7 +43,7 @@ public:
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
 	float getZoom(){ return zoom; } //current zoom level
-	ofVec2f getOffset(){return offset;}
+	ofVec2f getOffset(){return -offset;}
 	
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
 	bool isOnScreen(const ofVec2f & p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
