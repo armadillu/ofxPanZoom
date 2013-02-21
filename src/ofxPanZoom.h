@@ -39,7 +39,7 @@ public:
 	void setMinZoom(float min){ minZoom = min;} //how far out user can zoom
 	void setMaxZoom(float max){ maxZoom = max;}	//how far in user can zoom
 	void setZoom(float z){ zoom = z;}  //set a zoom level
-	void setSmoothZoomFactor(float smooth){ smoothFactor = smooth;}; // [0..1], 1 means no fitlering at all, 0.1 very smoothed zoom
+	void setSmoothFactor(float smooth){ smoothFactor = smooth;}; // [0..1], 1 means no fitlering at all, 0.1 very smoothed zoom
 	//void setVerticalFlip( bool flip){ vFlip = flip; } 
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
