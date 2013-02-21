@@ -15,7 +15,7 @@
 #include "ofxEasyRetina.h"
 
 #define	MAX_TOUCHES		12
-#define MIN_FINGER_DISTANCE 50.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
+#define MIN_FINGER_DISTANCE 70.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
 
 class testApp;
 
@@ -39,6 +39,7 @@ public:
 	void setMinZoom(float min){ minZoom = min;} //how far out user can zoom
 	void setMaxZoom(float max){ maxZoom = max;}	//how far in user can zoom
 	void setZoom(float z){ zoom = z;}  //set a zoom level
+	void setSmoothZoomFactor(float smooth){ smoothFactor = smooth;}; // [0..1], 1 means no fitlering at all, 0.1 very smoothed zoom
 	//void setVerticalFlip( bool flip){ vFlip = flip; } 
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
@@ -50,7 +51,9 @@ public:
 	bool isOnScreen(const ofRectangle & r, float gap = 0.0f); //query if an ofRectangle (in world units) is now visible on screen
 	void lookAt(ofVec2f p);	//set the offset to place the given point (in world units) in the middle of the screen
 	ofRectangle getCurentViewPort();
-	
+
+	void update(float deltaTime);
+
 	void apply(int customW = 0, int customH = 0);	//customWH >> if you need to provide a viewport size (not full screen)
 	void reset(); //go back to default OF screen projection
 	void drawDebug(); //overlay camera and touches status on screen
@@ -70,8 +73,12 @@ private:
 	ofVec2f bottomRight;
 	
 	ofVec2f offset;
-	ofVec2f zoomOffset;
+	ofVec2f desiredOffset;
+
 	float zoom;
+	float desiredZoom;
+
+	float smoothFactor;
 	
 	float minZoom;
 	float maxZoom;

@@ -29,6 +29,7 @@ void testApp::setup(){
 
 void testApp::update(){
 	touchAnims.update(0.016f);
+	cam.update(0.016f);
 
 	float amp = 900;
 	float freq = 0.2;

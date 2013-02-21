@@ -11,8 +11,9 @@
 
 
 ofxPanZoom::ofxPanZoom(){
-	
-	zoom = 1.0f;	
+
+	smoothFactor = 0.55;
+	zoom = desiredZoom =  1.0f;
 	for (int i = 0; i < MAX_TOUCHES; i++){
 		touching[i] = false;
 	}
@@ -20,7 +21,7 @@ ofxPanZoom::ofxPanZoom(){
 	minZoom = 0.1f;
 	maxZoom = 10.0f;	
 	zoomDiff = -1.0f;
-	offset.x = offset.y = 0.0f;
+	offset.x = offset.y = desiredOffset.x = desiredOffset.y = 0.0f;
 
 	//vFlip = true;
 	viewportConstrained = false;
@@ -68,7 +69,7 @@ void ofxPanZoom::apply(int customW, int customH){
 	//ofSetupScreenOrtho( ww, hh, (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f);
 	retinaUtils.setupScreenOrtho( ww, hh, (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f );
 	glScalef( zoom, zoom, zoom);
-	glTranslatef( offset.x + w + zoomOffset.x, offset.y + h + zoomOffset.y, 0.0f );	
+	glTranslatef( offset.x + w, offset.y + h, 0.0f );
 	
 	//recalc visible box
 	topLeft = screenToWorld( ofVec2f() );
@@ -85,8 +86,8 @@ void ofxPanZoom::reset(){
 }
 
 void ofxPanZoom::lookAt( ofVec2f p ){
-	offset.x = -p.x;
-	offset.y = -p.y;
+	desiredOffset.x = offset.x = -p.x;
+	desiredOffset.y = offset.y = -p.y;
 }
 
 bool ofxPanZoom::fingerDown(){
@@ -99,6 +100,14 @@ bool ofxPanZoom::fingerDown(){
 		}
 	}
 	return fingerDown;
+}
+
+
+void ofxPanZoom::update(float deltaTime){
+	float time = 1; deltaTime / 60.0f;
+	zoom = (time * smoothFactor) * desiredZoom + (1.0f - smoothFactor * time) * zoom;
+	offset = (time * smoothFactor) * desiredOffset + (1.0f - smoothFactor * time) * offset;
+	applyConstrains();
 }
 
 
@@ -190,17 +199,12 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 
 		// 1 finger >> pan
 		p = lastTouch[ touchIDOrder[0] ] - ofVec2f(touch.x,touch.y) ;
-		offset = offset - p * (1.0f / zoom);
+		desiredOffset = desiredOffset - p * (1.0f / zoom);
 		applyConstrains();
 
 	}else{
 
 		if (touchIDOrder.size() >= 2){
-			//pan with 2 fingers too
-			if ( touchIDOrder.size() == 2 ){
-				p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
-				offset = offset - p * (1.0 / zoom);
-			}
 
 			// 2 fingers >> zoom
 			d = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
@@ -208,23 +212,30 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 
 				//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
 				if ( zoomDiff > 0 ){
-					zoom *= ( d / zoomDiff ) ;
-					zoom = ofClamp( zoom, minZoom, maxZoom );
+					desiredZoom *= ( d / zoomDiff ) ;
+					desiredZoom = ofClamp( desiredZoom, minZoom, maxZoom );
 					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
 					tx -= ofGetWidth() * 0.5f;
 					ty -= ofGetHeight() * 0.5f;
 					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
-					if (zoom > minZoom && zoom < maxZoom){
-						offset.x += tx * ( 1.0f - d / zoomDiff ) / zoom ;
-						offset.y += ty * ( 1.0f - d / zoomDiff ) / zoom;
+					if (desiredZoom > minZoom && desiredZoom < maxZoom){
+						desiredOffset.x += tx * ( 1.0f - d / zoomDiff ) / desiredZoom ;
+						desiredOffset.y += ty * ( 1.0f - d / zoomDiff ) / desiredZoom;
 					}
 					//printf(" zoom after %f \n", zoom);
 				}
 
-				zoomDiff = d;
 				applyConstrains();
 			}
+
+			//pan with 2 fingers too
+			if ( touchIDOrder.size() == 2 ){
+				p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
+				desiredOffset += - p * (1.0 / desiredZoom);
+			}
+
+			zoomDiff = d;
 		}
 	}
 
@@ -273,18 +284,18 @@ void ofxPanZoom::applyConstrains(){
 		float xx = screenSize.x * 0.5f * (1.0f /  zoom);
 		float yy = screenSize.y * 0.5f * (1.0f /  zoom);
 
-		if ( offset.x > - (topLeftConstrain.x + xx) ){ 
-			offset.x = - (topLeftConstrain.x + xx);
+		if ( desiredOffset.x > - (topLeftConstrain.x + xx) ){ 
+			desiredOffset.x = - (topLeftConstrain.x + xx);
 		}
-		if( offset.y > - (topLeftConstrain.y + yy) ){
-			offset.y = - (topLeftConstrain.y + yy);
+		if( desiredOffset.y > - (topLeftConstrain.y + yy) ){
+			desiredOffset.y = - (topLeftConstrain.y + yy);
 		}
-		if ( offset.x < - (bottomRightConstrain.x - xx) ){
-			offset.x = - (bottomRightConstrain.x - xx);
+		if ( desiredOffset.x < - (bottomRightConstrain.x - xx) ){
+			desiredOffset.x = - (bottomRightConstrain.x - xx);
 		}
 		
-		if ( offset.y < - (bottomRightConstrain.y - yy) ){
-			offset.y = - (bottomRightConstrain.y - yy);
+		if ( desiredOffset.y < - (bottomRightConstrain.y - yy) ){
+			desiredOffset.y = - (bottomRightConstrain.y - yy);
 		}
 	}
 }
