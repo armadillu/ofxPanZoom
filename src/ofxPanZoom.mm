@@ -245,20 +245,21 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 
 void ofxPanZoom::touchUp(ofTouchEventArgs &touch){
 	
-	//printf("####### touchUp %d (zoomdif: %f) \n", touch.id, zoomDiff);
-	touching[touch.id] = false;
-	lastTouch[touch.id].x = touch.x;
-	lastTouch[touch.id].y = touch.y;
-
-	if ( touchIDOrder.size() >= 1) {
-		zoomDiff = -1.0f;
-	}
 
 	vector<int>::iterator it = std::find(touchIDOrder.begin(), touchIDOrder.end(), touch.id);
 	if ( it == touchIDOrder.end()){
 		//not found! wtf!
-		printf("wtf at touchup! can't find touchID %d\n", touch.id);
+		//printf("wtf at touchup! can't find touchID %d\n", touch.id);
 	}else{
+		//printf("####### touchUp %d (zoomdif: %f) \n", touch.id, zoomDiff);
+		touching[touch.id] = false;
+		lastTouch[touch.id].x = touch.x;
+		lastTouch[touch.id].y = touch.y;
+
+		if ( touchIDOrder.size() >= 1) {
+			zoomDiff = -1.0f;
+		}
+
 		touchIDOrder.erase(it);
 	}
 }
