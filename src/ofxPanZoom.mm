@@ -172,7 +172,7 @@ void ofxPanZoom::drawDebug(){
 
 void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
 
-	cout << "touchdown " << touch.id << endl;
+	//cout << "touchdown " << touch.id << endl;
 	touchIDOrder.push_back(touch.id);
 	
 	lastTouch[touch.id].x = touch.x;
