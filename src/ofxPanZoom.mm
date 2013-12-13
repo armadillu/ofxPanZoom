@@ -67,7 +67,7 @@ void ofxPanZoom::apply(int customW, int customH){
 	float h = hh * 0.5f / zoom;
 
 	//ofSetupScreenOrtho( ww, hh, (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f);
-	retinaUtils.setupScreenOrtho( ww, hh, (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f );
+	retinaUtils.setupScreenOrtho( -10.0f, 10.0f );
 	glScalef( zoom, zoom, zoom);
 	glTranslatef( offset.x + w, offset.y + h, 0.0f );
 	
@@ -157,10 +157,10 @@ void ofxPanZoom::drawDebug(){
 		ofRect( i * (w + 3), 3, w, w);
 	}
 
-//	string order = " touchOrder: ";
-//	for (int i = 0; i < touchIDOrder.size(); i++){
-//		order += ofToString( touchIDOrder[i] ) + ", ";
-//	}
+	string order = " touchOrder: ";
+	for (int i = 0; i < touchIDOrder.size(); i++){
+		order += ofToString( touchIDOrder[i] ) + ", ";
+	}
 
 	char msg[1000];
 	sprintf(msg, " zoom: %.1f \n offset: %.1f, %.1f \n ", zoom, offset.x, offset.y);
@@ -172,6 +172,7 @@ void ofxPanZoom::drawDebug(){
 
 void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
 
+	cout << "touchdown " << touch.id << endl;
 	touchIDOrder.push_back(touch.id);
 	
 	lastTouch[touch.id].x = touch.x;
@@ -207,7 +208,9 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 		if (touchIDOrder.size() >= 2){
 
 			// 2 fingers >> zoom
+			//cout << touchIDOrder[0] << " & " << touchIDOrder[1] << " >> " << lastTouch[ touchIDOrder[0] ] << " || " << lastTouch[ touchIDOrder[1] ] << endl;
 			d = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
+			//cout << d << endl;
 			if (d > MIN_FINGER_DISTANCE ){
 
 				//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);

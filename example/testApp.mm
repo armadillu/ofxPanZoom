@@ -4,8 +4,6 @@ int canvasW = 2000;	//these define where the camera can pan to
 int canvasH = 3000;
 
 void testApp::setup(){	
-	// register touch events
-	ofRegisterTouchEvents(this);
 	ofxiPhoneSetOrientation( (ofOrientation)ofxiPhoneGetOrientation() );	
 	// initialize the accelerometer
 	ofxAccelerometer.setup();	
