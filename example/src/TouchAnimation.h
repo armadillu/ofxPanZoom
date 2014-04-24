@@ -17,7 +17,7 @@ class TouchAnimation{
 
 public:
 	
-	typedef struct touch{
+	struct touch{
 		ofVec2f pos;
 		float time;
 		bool highlight;
