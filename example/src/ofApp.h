@@ -9,7 +9,7 @@
 #include "TouchAnimation.h"
 
 
-class testApp : public ofxiPhoneApp {
+class ofApp : public ofxiOSApp {
 	
 public:
 	void setup();

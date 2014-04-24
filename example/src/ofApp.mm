@@ -1,16 +1,15 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 int canvasW = 2000;	//these define where the camera can pan to
 int canvasH = 3000;
 
-void testApp::setup(){	
-	// register touch events
-	ofRegisterTouchEvents(this);
-	ofxiPhoneSetOrientation( (ofOrientation)ofxiPhoneGetOrientation() );	
+void ofApp::setup(){	
+//	ofxiPhoneSetOrientation( (ofOrientation)ofxiPhoneGetOrientation() );
+    ofSetOrientation(OF_ORIENTATION_DEFAULT);
 	// initialize the accelerometer
 	ofxAccelerometer.setup();	
-	//iPhoneAlerts will be sent to this.
-	ofxiPhoneAlerts.addListener(this);
+	//iOSAlerts will be sent to this.
+	ofxiOSAlerts.addListener(this);
 	
 	ofBackground(0);
 	ofEnableAlphaBlending();
@@ -27,7 +26,7 @@ void testApp::setup(){
 }
 
 
-void testApp::update(){
+void ofApp::update(){
 	touchAnims.update(0.016f);
 	cam.update(0.016f);
 
@@ -38,7 +37,7 @@ void testApp::update(){
 }
 
 
-void testApp::draw(){
+void ofApp::draw(){
 		
 	cam.apply(); //put all our drawing under the ofxPanZoom effect
 	
@@ -85,7 +84,7 @@ void testApp::draw(){
 }
 
 
-void testApp::touchDown(ofTouchEventArgs &touch){
+void ofApp::touchDown(ofTouchEventArgs &touch){
 
 	cam.touchDown(touch); //fw event to cam
 	
@@ -94,29 +93,29 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 }
 
 
-void testApp::touchMoved(ofTouchEventArgs &touch){
+void ofApp::touchMoved(ofTouchEventArgs &touch){
 	cam.touchMoved(touch); //fw event to cam
 }
 
 
-void testApp::touchUp(ofTouchEventArgs &touch){
+void ofApp::touchUp(ofTouchEventArgs &touch){
 	cam.touchUp(touch);	//fw event to cam
 }
 
 
-void testApp::touchDoubleTap(ofTouchEventArgs &touch){
+void ofApp::touchDoubleTap(ofTouchEventArgs &touch){
 	cam.touchDoubleTap(touch); //fw event to cam
 	cam.setZoom(1.0f);	//reset zoom
 	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) ); //reset position
 }
 
 
-void testApp::touchCancelled(ofTouchEventArgs& args){
+void ofApp::touchCancelled(ofTouchEventArgs& args){
 
 }
 
 
-void testApp::deviceOrientationChanged(int newOrientation){
+void ofApp::deviceOrientationChanged(int newOrientation){
 	//not sure whiy this is inverted in horizontal modes, disabling for now
 	//ofxiPhoneSetOrientation( (ofOrientation)newOrientation);
 	//cam.setScreenSize(ofGetWidth(), ofGetHeight());

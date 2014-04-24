@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>48CAEB21-D723-42C1-8D6B-A9F6B9A8B3D8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ofxPanZoomExample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>0252CC0A-8857-4539-8A09-6419A4241B91</key>
+		<string>https://github.com/Deivuh/ofxPanZoom.git</string>
+		<key>13C7BBFF-8C0E-42A4-A7AB-DEAEEC2622E0</key>
+		<string>https://github.com/danoli3/openFrameworks.git</string>
+		<key>9D78CB41-226E-44F2-85E1-DD3ED0222992</key>
+		<string>https://github.com/dorald/ofxEasyRetina.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>addons/ofxPanZoom/example/ofxPanZoomExample.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>0252CC0A-8857-4539-8A09-6419A4241B91</key>
+		<string>../../..</string>
+		<key>13C7BBFF-8C0E-42A4-A7AB-DEAEEC2622E0</key>
+		<string>../../../../..</string>
+		<key>9D78CB41-226E-44F2-85E1-DD3ED0222992</key>
+		<string>../../../../ofxEasyRetina</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Deivuh/ofxPanZoom.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>13C7BBFF-8C0E-42A4-A7AB-DEAEEC2622E0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9D78CB41-226E-44F2-85E1-DD3ED0222992</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxEasyRetina</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>0252CC0A-8857-4539-8A09-6419A4241B91</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxPanZoom</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>13C7BBFF-8C0E-42A4-A7AB-DEAEEC2622E0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>openFrameworks</string>
+		</dict>
+	</array>
+</dict>
+</plist>
