@@ -9,7 +9,6 @@
  */
 
 #include "TouchAnimation.h"
-#include <math.h>
 
 void TouchAnimation::update(float dt){
 
