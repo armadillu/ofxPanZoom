@@ -10,9 +10,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxiPhone.h"
-#include "ofxiPhoneExtras.h"
-#include "ofxEasyRetina.h"
 
 #define	MAX_TOUCHES		12
 #define MIN_FINGER_DISTANCE 70.0f /* in pixels - zooming when fingers were too close was unaccurate & jumpy*/
@@ -92,7 +89,6 @@ private:
 	bool viewportConstrained;
 	ofVec2f topLeftConstrain, bottomRightConstrain;
 
-	ofxEasyRetina retinaUtils;
 	vector<int> touchIDOrder;
 
 	ofRectangle pViewport;

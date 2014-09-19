@@ -27,10 +27,6 @@ ofxPanZoom::ofxPanZoom(){
 	viewportConstrained = false;
 }
 
-void ofxPanZoom::setDeviceScaleFactor(float f){
-	retinaUtils.setDeviceScaleFactor(f);
-}
-
 
 void ofxPanZoom::setScreenSize(int x, int y){
 	
@@ -66,8 +62,7 @@ void ofxPanZoom::apply(int customW, int customH){
 	float w = ww * 0.5f / zoom;
 	float h = hh * 0.5f / zoom;
 
-	//ofSetupScreenOrtho( ww, hh, (ofOrientation) ofxiPhoneGetOrientation(), true, -10.0f, 10.0f);
-	retinaUtils.setupScreenOrtho( -10.0f, 10.0f );
+	ofSetupScreenOrtho( ww, hh, (ofOrientation) OF_ORIENTATION_DEFAULT, true, -10.0f, 10.0f);
 	glScalef( zoom, zoom, zoom);
 	glTranslatef( offset.x + w, offset.y + h, 0.0f );
 	
@@ -81,8 +76,7 @@ void ofxPanZoom::apply(int customW, int customH){
 
 
 void ofxPanZoom::reset(){
-	//ofSetupScreen();
-	retinaUtils.setupScreenPerspective();
+	ofSetupScreen();
 }
 
 void ofxPanZoom::lookAt( ofVec2f p ){

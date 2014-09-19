@@ -4,12 +4,7 @@ int canvasW = 2000;	//these define where the camera can pan to
 int canvasH = 3000;
 
 void ofApp::setup(){	
-//	ofxiPhoneSetOrientation( (ofOrientation)ofxiPhoneGetOrientation() );
-    ofSetOrientation(OF_ORIENTATION_DEFAULT);
-	// initialize the accelerometer
-	ofxAccelerometer.setup();	
-	//iOSAlerts will be sent to this.
-	ofxiOSAlerts.addListener(this);
+
 	
 	ofBackground(0);
 	ofEnableAlphaBlending();

@@ -1,15 +1,13 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxiPhone.h"
-#include "ofxiPhoneExtras.h"
 
 #include "ofxPanZoom.h"
 #include "Grid.h"
 #include "TouchAnimation.h"
 
 
-class ofApp : public ofxiOSApp {
+class ofApp : public ofBaseApp {
 	
 public:
 	void setup();
