@@ -9,7 +9,7 @@
  */
 
 #include "TouchAnimation.h"
-
+#include <math.h>
 
 void TouchAnimation::update(float dt){
 
@@ -46,7 +46,7 @@ void TouchAnimation::draw(){
 		if ( lifePercent < 0.5f){
 			alpha = 1.0f;
 		}else {
-			alpha = 0.5 + 0.5 * cosf( -M_PI + 2.0f * M_PI * lifePercent );
+			alpha = 0.5 + 0.5 * cosf( -3.141592653f + 2.0f * 3.141592653f * lifePercent );
 		}
 
 		ofPushStyle();
