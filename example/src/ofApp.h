@@ -5,7 +5,7 @@
 #include "ofxPanZoom.h"
 #include "Grid.h"
 #include "TouchAnimation.h"
-
+#include "Win7TouchQueue.h"
 
 #define GLUT_MULTITOUCH
 
@@ -41,6 +41,8 @@ public:
 	Grid grid;
 	TouchAnimation touchAnims;
 
+	Win7TouchQueue tq; //touch queue, to avoid doing heavy work on touch callbacks
+	void processTouches(vector<Win7TouchQueue::WinTouch> & t);
 
 	ofVec2f ball;
 };

@@ -68,7 +68,7 @@ void ofxPanZoom::apply(int customW, int customH){
 
 	glScalef( zoom, zoom, zoom);
 	glTranslatef( offset.x + w, offset.y + h, 0.0f );
-	cout << offset << endl;
+	//cout << offset << endl;
 	//recalc visible box
 	topLeft = screenToWorld( ofVec2f() );
 	bottomRight = screenToWorld( screenSize );
@@ -216,8 +216,8 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 					desiredZoom = ofClamp( desiredZoom, minZoom, maxZoom );
 					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
-					//tx += ofGetWidth() * 0.5;
-					//ty += ofGetHeight() * 0.5;
+					tx -= ofGetWidth() * 0.5;
+					ty -= ofGetHeight() * 0.5;
 					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
 					if (desiredZoom > minZoom && desiredZoom < maxZoom){
 						desiredOffset.x += tx * ( 1.0f - d / zoomDiff ) / desiredZoom ;

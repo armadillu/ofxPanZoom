@@ -20,8 +20,40 @@ void ofApp::setup(){
 	grid.create();
 }
 
+void ofApp::processTouches(vector<Win7TouchQueue::WinTouch> & t){
+
+	for(int i = 0 ; i < t.size(); i++){
+		ofTouchEventArgs touch;
+		touch.id = t[i].ID;
+		touch.x = t[i].pos.x;
+		touch.y = t[i].pos.y;;
+
+		switch (t[i].action) {
+		case Win7TouchQueue::TOUCH_ADD:{
+			cam.touchDown(touch); //fw event to cam
+			ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch (in screen units) to world units
+			touchAnims.addTouch( p.x, p.y ); 
+			}break;
+
+		case Win7TouchQueue::TOUCH_UPDATE:
+			cam.touchMoved(touch); //fw event to cam
+			break;
+
+		case Win7TouchQueue::TOUCH_REMOVE:
+			cam.touchUp(touch);	//fw event to cam
+			break;
+
+		default:
+			break;
+		}
+	}
+}
 
 void ofApp::update(){
+
+	vector<Win7TouchQueue::WinTouch> touches = tq.update();
+	processTouches(touches);
+
 	touchAnims.update(0.016f);
 	cam.update(0.016f);
 
@@ -81,34 +113,19 @@ void ofApp::draw(){
 
 void ofApp::touchDown(int x, int y, int id){
 
-	cout << "touchDown " << x << ", " << y << "  ID: " << id << endl;
-	ofTouchEventArgs touch;
-	touch.id = id;
-	touch.x = x;
-	touch.y = y;
-	cam.touchDown(touch); //fw event to cam
-	
-	ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch (in screen units) to world units
-	touchAnims.addTouch( p.x, p.y ); 
+	//cout << "touchDown " << x << ", " << y << "  ID: " << id << endl;
+	tq.addTouchAdded(id -194, ofVec2f(x,y));
 }
 
 void ofApp::touchMoved(int x, int y, int id){
-	cout << "touchMoved " << x << ", " << y << "  ID: " << id << endl;
-	ofTouchEventArgs touch;
-	touch.id = id;
-	touch.x = x;
-	touch.y = y;
-	cam.touchMoved(touch); //fw event to cam
+	//cout << "touchMoved " << x << ", " << y << "  ID: " << id << endl;
+	tq.addTouchUpdated(id-194, ofVec2f(x,y));
 }
 
 
 void ofApp::touchUp(int x, int y, int id){
-	cout << "touchUp " << x << ", " << y << "  ID: " << id << endl;
-	ofTouchEventArgs touch;
-	touch.id = id;
-	touch.x = x;
-	touch.y = y;
-	cam.touchUp(touch);	//fw event to cam
+	//cout << "touchUp " << x << ", " << y << "  ID: " << id << endl;
+	tq.addTouchRemoved(id-194, ofVec2f(x,y));
 }
 
 
