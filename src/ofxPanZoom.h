@@ -59,6 +59,7 @@ public:
 	ofVec2f screenToWorld(const ofVec2f & p); //convert a point from current screen units to world units
 	ofVec2f worldToScreen(const ofVec2f & p); //convert a point from world units to current screen units
 	
+	void setupScreenOrtho(float nearDist, float farDist);
 private:
 	
 	void applyConstrains();

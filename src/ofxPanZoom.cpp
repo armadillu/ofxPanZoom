@@ -62,16 +62,19 @@ void ofxPanZoom::apply(int customW, int customH){
 	float w = ww * 0.5f / zoom;
 	float h = hh * 0.5f / zoom;
 
-	ofSetupScreenOrtho( ww, hh, (ofOrientation) OF_ORIENTATION_DEFAULT, true, -10.0f, 10.0f);
+	//ofSetOrientation(ofGetOrientation(), true);
+	ofSetupScreenOrtho( ww, hh, -10.0f, 10.0f);
+	//setupScreenOrtho(-10, 10);
+
 	glScalef( zoom, zoom, zoom);
 	glTranslatef( offset.x + w, offset.y + h, 0.0f );
-	
+	cout << offset << endl;
 	//recalc visible box
 	topLeft = screenToWorld( ofVec2f() );
 	bottomRight = screenToWorld( screenSize );
 
-	//ofCircle(topLeft.x, topLeft.y, 20);
-	//ofCircle(bottomRight.x, bottomRight.y, 20);	
+	ofCircle(topLeft.x, topLeft.y, 20);
+	ofCircle(bottomRight.x, bottomRight.y, 20);	
 }
 
 
@@ -213,8 +216,8 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 					desiredZoom = ofClamp( desiredZoom, minZoom, maxZoom );
 					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
-					tx -= ofGetWidth() * 0.5f;
-					ty -= ofGetHeight() * 0.5f;
+					//tx += ofGetWidth() * 0.5;
+					//ty += ofGetHeight() * 0.5;
 					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
 					if (desiredZoom > minZoom && desiredZoom < maxZoom){
 						desiredOffset.x += tx * ( 1.0f - d / zoomDiff ) / desiredZoom ;
@@ -296,4 +299,23 @@ void ofxPanZoom::applyConstrains(){
 			desiredOffset.y = - (bottomRightConstrain.y - yy);
 		}
 	}
+}
+
+void ofxPanZoom::setupScreenOrtho(float nearDist, float farDist) {
+
+	ofRectangle currentViewport = ofGetCurrentRenderer()->getCurrentViewport();
+	float scaleFactor = 1.0f;
+	float viewW = currentViewport.width / scaleFactor; // oriol added scale (retina)
+	float viewH = currentViewport.height / scaleFactor;
+
+	ofMatrix4x4 ortho;
+
+	ortho = ofMatrix4x4::newOrthoMatrix(0, viewW, 0, viewH, nearDist, farDist);
+
+	ofGetCurrentRenderer()->matrixMode(OF_MATRIX_PROJECTION);
+	ofGetCurrentRenderer()->loadMatrix(ortho); // make ortho our new projection matrix.
+
+	ofGetCurrentRenderer()->matrixMode(OF_MATRIX_MODELVIEW);
+	ofGetCurrentRenderer()->loadIdentityMatrix();
+
 }

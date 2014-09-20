@@ -15,7 +15,7 @@ void ofApp::setup(){
 	cam.setMaxZoom(5.0f);
 	cam.setScreenSize( ofGetWidth(), ofGetHeight() ); //tell the system how large is out screen
 	float gap = 100;
-	cam.setViewportConstrain( ofVec3f(-gap, -gap), ofVec3f(canvasW + gap, canvasH + gap)); //limit browseable area, in world units
+	//cam.setViewportConstrain( ofVec3f(-gap, -gap), ofVec3f(canvasW + gap, canvasH + gap)); //limit browseable area, in world units
 	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) );
 	grid.create();
 }
@@ -79,39 +79,42 @@ void ofApp::draw(){
 }
 
 
-void ofApp::touchDown(ofTouchEventArgs &touch){
+void ofApp::touchDown(int x, int y, int id){
 
+	cout << "touchDown " << x << ", " << y << "  ID: " << id << endl;
+	ofTouchEventArgs touch;
+	touch.id = id;
+	touch.x = x;
+	touch.y = y;
 	cam.touchDown(touch); //fw event to cam
 	
 	ofVec3f p =  cam.screenToWorld( ofVec3f( touch.x, touch.y) );	//convert touch (in screen units) to world units
 	touchAnims.addTouch( p.x, p.y ); 
 }
 
-
-void ofApp::touchMoved(ofTouchEventArgs &touch){
+void ofApp::touchMoved(int x, int y, int id){
+	cout << "touchMoved " << x << ", " << y << "  ID: " << id << endl;
+	ofTouchEventArgs touch;
+	touch.id = id;
+	touch.x = x;
+	touch.y = y;
 	cam.touchMoved(touch); //fw event to cam
 }
 
 
-void ofApp::touchUp(ofTouchEventArgs &touch){
+void ofApp::touchUp(int x, int y, int id){
+	cout << "touchUp " << x << ", " << y << "  ID: " << id << endl;
+	ofTouchEventArgs touch;
+	touch.id = id;
+	touch.x = x;
+	touch.y = y;
 	cam.touchUp(touch);	//fw event to cam
 }
 
 
-void ofApp::touchDoubleTap(ofTouchEventArgs &touch){
-	cam.touchDoubleTap(touch); //fw event to cam
-	cam.setZoom(1.0f);	//reset zoom
-	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) ); //reset position
-}
-
-
-void ofApp::touchCancelled(ofTouchEventArgs& args){
-
-}
-
-
-void ofApp::deviceOrientationChanged(int newOrientation){
-	//not sure whiy this is inverted in horizontal modes, disabling for now
-	//ofxiPhoneSetOrientation( (ofOrientation)newOrientation);
-	//cam.setScreenSize(ofGetWidth(), ofGetHeight());
-};
+// void ofApp::touchDoubleTap(ofTouchEventArgs &touch){
+// 	cam.touchDoubleTap(touch); //fw event to cam
+// 	cam.setZoom(1.0f);	//reset zoom
+// 	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) ); //reset position
+// }
+// 
