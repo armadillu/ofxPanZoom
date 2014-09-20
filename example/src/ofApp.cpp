@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-int canvasW = 2000;	//these define where the camera can pan to
+int canvasW = 4000;	//these define where the camera can pan to
 int canvasH = 3000;
 
 void ofApp::setup(){	
@@ -11,11 +11,11 @@ void ofApp::setup(){
 	ofSetCircleResolution(32);
 	
 	cam.setZoom(1.0f);
-	cam.setMinZoom(0.5f);
-	cam.setMaxZoom(5.0f);
+	cam.setMinZoom(1.0f);
+	cam.setMaxZoom(20.0f);
 	cam.setScreenSize( ofGetWidth(), ofGetHeight() ); //tell the system how large is out screen
 	float gap = 100;
-	//cam.setViewportConstrain( ofVec3f(-gap, -gap), ofVec3f(canvasW + gap, canvasH + gap)); //limit browseable area, in world units
+	cam.setViewportConstrain( ofVec3f(-gap, -gap), ofVec3f(canvasW + gap, canvasH + gap)); //limit browseable area, in world units
 	cam.lookAt( ofVec2f(canvasW/2, canvasH/2) );
 	grid.create();
 }
@@ -114,18 +114,18 @@ void ofApp::draw(){
 void ofApp::touchDown(int x, int y, int id){
 
 	//cout << "touchDown " << x << ", " << y << "  ID: " << id << endl;
-	tq.addTouchAdded(id -194, ofVec2f(x,y));
+	tq.addTouchAdded(id, ofVec2f(x,y));
 }
 
 void ofApp::touchMoved(int x, int y, int id){
 	//cout << "touchMoved " << x << ", " << y << "  ID: " << id << endl;
-	tq.addTouchUpdated(id-194, ofVec2f(x,y));
+	tq.addTouchUpdated(id, ofVec2f(x,y));
 }
 
 
 void ofApp::touchUp(int x, int y, int id){
 	//cout << "touchUp " << x << ", " << y << "  ID: " << id << endl;
-	tq.addTouchRemoved(id-194, ofVec2f(x,y));
+	tq.addTouchRemoved(id, ofVec2f(x,y));
 }
 
 
