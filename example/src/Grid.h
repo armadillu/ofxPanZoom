@@ -16,11 +16,8 @@
 class Grid {
 	
 	public:
-		void create();
+		void create(int w, int h, int step);
 		void draw();
 
-	float linePointsV[1004];
-	float linePointsH[1004];
-	GLubyte colors[1004 * 2];
-	int	numPoints;
+	ofVboMesh mesh;
 };

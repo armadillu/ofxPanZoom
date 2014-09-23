@@ -10,64 +10,49 @@
 #include "Grid.h"
 
 
-void Grid::create(){
+void Grid::create(int w, int h, int step){
 
-	double s = 10000;	
-	float step = 12.5;			//each square size 400
+	mesh.clear();
 
-	ofVec2f worldOrigin = ofVec2f (-s/2, -s/2);
-	ofVec2f worldSize = ofVec2f( s,s);
+	float gridH = w / float(step);
+	float numLinesH = h / gridH;
+	mesh.setMode(OF_PRIMITIVE_LINES);
+	
+	ofColor col;
 
-	numPoints = worldSize.x / step;
-	printf("num point: %d\n", numPoints);
-	
-	for ( int i=0; i<= numPoints; i+=4 ){
-		linePointsV[i] = worldOrigin.x + step * i;
-		linePointsV[i+1] = worldOrigin.y;
-		linePointsV[i+2] = worldOrigin.x + step * i;
-		linePointsV[i+3] = worldOrigin.y + worldSize.y;
+	for(int i = 0; i < numLinesH; i++){
+		mesh.addVertex( ofVec2f(-w/2,  -h/2 + gridH * i) );
+		mesh.addVertex( ofVec2f(w/2,  -h/2 + gridH * i) );
+		
+		if ((i)%5 == 0)
+			col.r = col.g = col.b = 40;
+		else
+			col.r = col.g = col.b = 10;
+		mesh.addColor(col);
+		mesh.addColor(col);
 	}
-	
-	for ( int i=0; i<= numPoints; i+=4 ){
-		linePointsH[i] = worldOrigin.x;
-		linePointsH[i+1] = worldOrigin.y + step * i;
-		linePointsH[i+2] = worldOrigin.x + worldSize.x;
-		linePointsH[i+3] = worldOrigin.y + step * i;
+
+	float numLinesW = w / float(gridH);
+
+	for(int i = 0; i < numLinesW; i++){
+		mesh.addVertex( ofVec2f( -w/2 + gridH * i, -h/2 ) );
+		mesh.addVertex( ofVec2f( -w/2 + gridH * i, h/2) );
+
+		if ((i)%5 == 0)
+			col.r = col.g = col.b = 40;
+		else
+			col.r = col.g = col.b = 10;
+		mesh.addColor(col);
+		mesh.addColor(col);
 	}
-	
-	for ( int i=0; i<= numPoints*2 + 4 ; i+=4 ){
-		int c = 20;
-		if ((i/4)%10 == 1 || (i/4)%10 == 0)
-			c = 30;
-		colors[i] = c;
-		colors[i+1] = c;
-		colors[i+2] = c;
-		colors[i+3] = 128;
-	}
+
 }
 
 
 void Grid::draw(){
 
-	glDisable(GL_BLEND);
-		
-//	glBlendFunc(GL_SRC_COLOR, GL_SRC_COLOR)
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_UNSIGNED_BYTE, 0, &colors[0]);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	glVertexPointer(2, GL_FLOAT, 0, &linePointsH[0]);
-	glDrawArrays(GL_LINES, 0, numPoints/2 + 2);
+	mesh.draw();
 
-	glVertexPointer(2, GL_FLOAT, 0, &linePointsV[0]);
-	glDrawArrays(GL_LINES, 0, numPoints/2 + 2);
-
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
-	glEnable(GL_BLEND);
 	glColor4ub(80, 80, 80, 255);
 	ofLine(0, -60, 0, 60);
 	ofLine( -60, 0, 60,0);

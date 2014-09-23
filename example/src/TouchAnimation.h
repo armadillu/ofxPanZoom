@@ -11,7 +11,7 @@
 #include <vector>
 
 #define TOUCH_ANIM_DURATION	0.75f
-#define TOUCH_ANIM_RADIUS	75.0f
+#define TOUCH_ANIM_RADIUS	45.0f
 
 class TouchAnimation{
 
