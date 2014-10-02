@@ -11,7 +11,6 @@
 
 
 ofxPanZoom::ofxPanZoom(){
-
 	smoothFactor = 0.55;
 	zoom = desiredZoom =  1.0f;
 	for (int i = 0; i < MAX_TOUCHES; i++){
@@ -25,6 +24,9 @@ ofxPanZoom::ofxPanZoom(){
 
 	//vFlip = true;
 	viewportConstrained = false;
+
+	enableTranslate();
+	setArea(ofVec2f(ofGetWidth(), ofGetHeight()));
 }
 
 
@@ -56,8 +58,8 @@ bool ofxPanZoom::isOnScreen( const ofRectangle & r, float gap ){	///gets point i
 
 void ofxPanZoom::apply(int customW, int customH){
 
-	int ww = customW == 0 ? ofGetWidth() : customW;
-	int hh = customH == 0 ? ofGetHeight() : customH;
+	int ww = customW == 0 ? area.x : customW;
+	int hh = customH == 0 ? area.y : customH;
 	
 	float w = ww * 0.5f / zoom;
 	float h = hh * 0.5f / zoom;
@@ -111,16 +113,16 @@ void ofxPanZoom::update(float deltaTime){
 ofVec2f ofxPanZoom::screenToWorld( const ofVec2f & p ){
 	float f = 1.0f / zoom;
 	ofVec2f r;
-	r.x =  f * p.x - f * ofGetWidth() * 0.5f - offset.x ;
-	r.y =  f * p.y - f * ofGetHeight() * 0.5f - offset.y ;
+	r.x =  f * p.x - f * area.x * 0.5f - offset.x ;
+	r.y =  f * p.y - f * area.y * 0.5f - offset.y ;
 	return r;
 }
 
 ofVec2f ofxPanZoom::worldToScreen( const ofVec2f & p ){
 	float f = 1.0f / zoom;
 	ofVec2f r;
-	r.x = ( p.x + f * ofGetWidth() * 0.5f + offset.x ) * zoom;
-	r.y = ( p.y + f * ofGetHeight() * 0.5f + offset.y ) * zoom;
+	r.x = ( p.x + f * area.x * 0.5f + offset.x ) * zoom;
+	r.y = ( p.y + f * area.y * 0.5f + offset.y ) * zoom;
 	return r;
 }
 
@@ -194,7 +196,6 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	if (touching[touch.id] == false) return;
 
 	if (touchIDOrder.size() == 1){
-
 		// 1 finger >> pan
 		p = lastTouch[ touchIDOrder[0] ] - ofVec2f(touch.x,touch.y) ;
 		desiredOffset = desiredOffset - p * (1.0f / zoom);
@@ -216,8 +217,8 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 					desiredZoom = ofClamp( desiredZoom, minZoom, maxZoom );
 					float tx = ( lastTouch[0].x + lastTouch[1].x ) * 0.5f ;
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
-					tx -= ofGetWidth() * 0.5;
-					ty -= ofGetHeight() * 0.5;
+					tx -= area.x * 0.5;
+					ty -= area.y * 0.5;
 					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
 					if (desiredZoom > minZoom && desiredZoom < maxZoom){
 						desiredOffset.x += tx * ( 1.0f - d / zoomDiff ) / desiredZoom ;

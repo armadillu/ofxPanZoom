@@ -38,6 +38,8 @@ public:
 	void setZoom(float z){ zoom = desiredZoom = z;}  //set a zoom level
 	void setSmoothFactor(float smooth){ smoothFactor = smooth;}; // [0..1], 1 means no fitlering at all, 0.1 very smoothed zoom
 	//void setVerticalFlip( bool flip){ vFlip = flip; } 
+	void enableTranslate(bool _enable = true){ bTranslate = _enable; }
+	void setArea(ofVec2f size){ area = size; }
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
 	float getZoom(){ return zoom; } //current zoom level
@@ -92,5 +94,8 @@ private:
 	vector<int> touchIDOrder;
 
 	ofRectangle pViewport;
+
+	bool bTranslate;
 	
+	ofVec2f area;
 };
