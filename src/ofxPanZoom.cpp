@@ -195,7 +195,7 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 	//printf("####### touchMoved %d (%.1f %.1f zoomdif: %f) \n", touch.id, touch.x, touch.y, zoomDiff);
 	if (touching[touch.id] == false) return;
 
-	if (touchIDOrder.size() == 1){
+	if (touchIDOrder.size() == 1 && bTranslate){
 		// 1 finger >> pan
 		p = lastTouch[ touchIDOrder[0] ] - ofVec2f(touch.x,touch.y) ;
 		desiredOffset = desiredOffset - p * (1.0f / zoom);
