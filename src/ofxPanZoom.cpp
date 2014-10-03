@@ -13,9 +13,6 @@
 ofxPanZoom::ofxPanZoom(){
 	smoothFactor = 0.55;
 	zoom = desiredZoom =  1.0f;
-	for (int i = 0; i < MAX_TOUCHES; i++){
-		touching[i] = false;
-	}
 	
 	minZoom = 0.1f;
 	maxZoom = 10.0f;	
@@ -90,15 +87,7 @@ void ofxPanZoom::lookAt( ofVec2f p ){
 }
 
 bool ofxPanZoom::fingerDown(){
-	
-	bool fingerDown = false;
-	for (int i = 0; i < MAX_TOUCHES; i++) {
-		if (touching[i] == true){
-			fingerDown = true;
-			break;
-		}
-	}
-	return fingerDown;
+	return touchIDOrder.size() > 0;
 }
 
 
@@ -150,7 +139,7 @@ void ofxPanZoom::drawDebug(){
 
 	ofSetRectMode(OF_RECTMODE_CORNER);
 	for (int i = 0; i < MAX_TOUCHES; i++){
-		if (touching[i]) glColor4f(0, 1, 0, 1);
+		if (i < touchIDOrder.size()) glColor4f(0, 1, 0, 1);
 		else glColor4f(1, 0, 0, 1);
 		float w = 8;
 		ofRect( i * (w + 3), 3, w, w);
@@ -165,53 +154,60 @@ void ofxPanZoom::drawDebug(){
 	sprintf(msg, " zoom: %.1f \n offset: %.1f, %.1f \n ", zoom, offset.x, offset.y);
 	glColor4f(1, 1, 1, 1);
 	ofDrawBitmapString(msg, 3.0f, 25.0f);
-	//ofDrawBitmapString(order, 3.0f, 55.0f);
+	ofDrawBitmapString(order, 3.0f, 55.0f);
 }
 
 
 void ofxPanZoom::touchDown(ofTouchEventArgs &touch){
-
 	//cout << "touchdown " << touch.id << endl;
 	touchIDOrder.push_back(touch.id);
-	
-	lastTouch[touch.id].x = touch.x;
-	lastTouch[touch.id].y = touch.y;
 
+	int idx = idToIndex(touch.id);
+
+	if(idx == INDEX_NOT_FOUND){
+		// cout << "ofxPanZoom#touchDown INDEX_NOT_FOUND - How could this happen, we just added it?!";
+		return;
+	}
+
+	// ofTouchEventArgs inherits from ofVec2f, it's essentially a 2d float vector
+	lastTouch[idx].set(touch);
 	//printf("####### touchDown %d (zoomdif: %f) %f %f \n", touch.id, zoomDiff , touch.x, touch.y);
 
 	if (touchIDOrder.size() >= 2){
-		zoomDiff = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
+		// use first two touches, ignore the rest
+		zoomDiff = lastTouch[0].distance( lastTouch[1] );
 	}
-
-	touching[touch.id] = true;
 }
 
 
 void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
-	
 	ofVec2f p, now;
 	float d;
-	
+
+	int idx = idToIndex(touch.id);
+
+	if(idx == INDEX_NOT_FOUND){
+		// cout << "ofxPanZoom#touchMoved INDEX_NOT_FOUND";
+		return;
+	}
+
 	//printf("####### touchMoved %d (%.1f %.1f zoomdif: %f) \n", touch.id, touch.x, touch.y, zoomDiff);
-	if (touching[touch.id] == false) return;
 
 	if (touchIDOrder.size() == 1 && bTranslate){
 		// 1 finger >> pan
-		p = lastTouch[ touchIDOrder[0] ] - ofVec2f(touch.x,touch.y) ;
+		p = lastTouch[idx] - ofVec2f(touch.x,touch.y) ;
 		desiredOffset = desiredOffset - p * (1.0f / zoom);
 		applyConstrains();
-
 	}else{
-
 		if (touchIDOrder.size() >= 2){
-
 			// 2 fingers >> zoom
-			//cout << touchIDOrder[0] << " & " << touchIDOrder[1] << " >> " << lastTouch[ touchIDOrder[0] ] << " || " << lastTouch[ touchIDOrder[1] ] << endl;
-			d = lastTouch[ touchIDOrder[0] ].distance( lastTouch[ touchIDOrder[1] ] );
+			// cout << touchIDOrder[0] << " & " << touchIDOrder[1] << " >> " << lastTouch[0] << " || " << lastTouch[1] << endl;
+
+			// use first two touches, ignore the rest
+			d = lastTouch[ 0 ].distance( lastTouch[ 1 ] );
 			//cout << d << endl;
 			if (d > MIN_FINGER_DISTANCE ){
-
-				//printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
+				// printf(" zoomDiff: %f  d:%f  > zoom: %f\n", zoomDiff, d, zoom);
 				if ( zoomDiff > 0 ){
 					desiredZoom *= ( d / zoomDiff ) ;
 					desiredZoom = ofClamp( desiredZoom, minZoom, maxZoom );
@@ -219,12 +215,12 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 					float ty = ( lastTouch[0].y + lastTouch[1].y ) * 0.5f ;
 					tx -= area.x * 0.5;
 					ty -= area.y * 0.5;
-					//printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
+					// printf(" tx: %f   ty: %f  d / zoomDiff: %f \n", tx, ty, d / zoomDiff);
 					if (desiredZoom > minZoom && desiredZoom < maxZoom){
 						desiredOffset.x += tx * ( 1.0f - d / zoomDiff ) / desiredZoom ;
 						desiredOffset.y += ty * ( 1.0f - d / zoomDiff ) / desiredZoom;
 					}
-					//printf(" zoom after %f \n", zoom);
+					// printf(" zoom after %f \n", zoom);
 				}
 
 				applyConstrains();
@@ -232,7 +228,7 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 
 			//pan with 2 fingers too
 			if ( touchIDOrder.size() == 2 ){
-				p = 0.5 * ( lastTouch[touch.id] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
+				p = 0.5 * ( lastTouch[idx] - ofVec2f(touch.x,touch.y) ); //0.5 to average both touch offsets
 				desiredOffset += - p * (1.0 / desiredZoom);
 			}
 
@@ -240,29 +236,31 @@ void ofxPanZoom::touchMoved(ofTouchEventArgs &touch){
 		}
 	}
 
-	lastTouch[touch.id].x = touch.x;
-	lastTouch[touch.id].y = touch.y;
+	lastTouch[idx].set(touch);
 }
 
 void ofxPanZoom::touchUp(ofTouchEventArgs &touch){
-	
+	int idx = idToIndex(touch.id);
 
-	vector<int>::iterator it = std::find(touchIDOrder.begin(), touchIDOrder.end(), touch.id);
-	if ( it == touchIDOrder.end()){
+	if(idx == INDEX_NOT_FOUND){
 		//not found! wtf!
-		//printf("wtf at touchup! can't find touchID %d\n", touch.id);
-	}else{
-		//printf("####### touchUp %d (zoomdif: %f) \n", touch.id, zoomDiff);
-		touching[touch.id] = false;
-		lastTouch[touch.id].x = touch.x;
-		lastTouch[touch.id].y = touch.y;
-
-		if ( touchIDOrder.size() >= 1) {
-			zoomDiff = -1.0f;
-		}
-
-		touchIDOrder.erase(it);
+		printf("wtf at touchup! can't find touchID %d\n", touch.id);
+		return;
 	}
+
+	//printf("####### touchUp %d (zoomdif: %f) \n", touch.id, zoomDiff);
+	lastTouch[idx].set(touch);
+
+	if ( touchIDOrder.size() >= 1) {
+		zoomDiff = -1.0f;
+	}
+
+	touchIDOrder.erase(touchIDOrder.begin()+idx);
+	// by taking the touch ID out of the touchIDOrder vector, all the later
+	// touches (if any) will shift one index down. So all lastTouch coordinates
+	// should shift down with them (because these two lists are related).
+	// That's what we're doing here:
+	std::memcpy(&lastTouch[idx], &lastTouch[idx+1], sizeof(int) * (MAX_TOUCHES - idx - 1));
 }
 
 
@@ -278,6 +276,13 @@ void ofxPanZoom::setViewportConstrain( ofVec2f topLeftConstrain_, ofVec2f bottom
 
 void ofxPanZoom::removeViewportConstrain(){
 	viewportConstrained = false;	
+}
+
+int ofxPanZoom::idToIndex(int id){
+	for(int i = touchIDOrder.size() - 1; i >= 0; i--)
+		if(touchIDOrder[i] == id)
+			return i;
+	return INDEX_NOT_FOUND;
 }
 
 void ofxPanZoom::applyConstrains(){

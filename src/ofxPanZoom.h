@@ -19,7 +19,7 @@ class testApp;
 class ofxPanZoom{
 
 public:
-	
+	#define INDEX_NOT_FOUND (-1)
 	ofxPanZoom();
 	~ofxPanZoom(){};
 		
@@ -63,7 +63,8 @@ public:
 	ofVec2f worldToScreen(const ofVec2f & p); //convert a point from world units to current screen units
 
 private:
-	
+	int idToIndex(int id);
+
 	void applyConstrains();
 	
 	ofVec2f screenSize;
@@ -85,7 +86,6 @@ private:
 	
 	float zoomDiff;
 	
-	bool touching[MAX_TOUCHES];
 	ofVec2f lastTouch[MAX_TOUCHES];
 	
 	bool vFlip;	//of give you standard OF flipped y
