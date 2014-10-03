@@ -19,7 +19,7 @@ class testApp;
 class ofxPanZoom{
 
 public:
-	
+	#define INDEX_NOT_FOUND (-1)
 	ofxPanZoom();
 	~ofxPanZoom(){};
 		
@@ -38,11 +38,14 @@ public:
 	void setZoom(float z){ zoom = desiredZoom = z;}  //set a zoom level
 	void setSmoothFactor(float smooth){ smoothFactor = smooth;}; // [0..1], 1 means no fitlering at all, 0.1 very smoothed zoom
 	//void setVerticalFlip( bool flip){ vFlip = flip; } 
+	void enableTranslate(bool _enable = true){ bTranslate = _enable; }
+	void setArea(ofVec2f size){ area = size; }
 
 	bool fingerDown(); //return true if user has 1+ fingers on screen
 	float getZoom(){ return zoom; } //current zoom level
 	ofVec2f getOffset(){return -offset;}
-	
+	int getActiveTouchCount(){ return touchIDOrder.size(); }
+
 	void setScreenSize(int x, int y); //you need to provide the device screen size here
 	bool isOnScreen(const ofVec2f & p, float gap = 0.0f); //query if a point (in world units) is now visible on screen
 	bool isOnScreen(const ofRectangle & r, float gap = 0.0f); //query if an ofRectangle (in world units) is now visible on screen
@@ -60,7 +63,8 @@ public:
 	ofVec2f worldToScreen(const ofVec2f & p); //convert a point from world units to current screen units
 
 private:
-	
+	int idToIndex(int id);
+
 	void applyConstrains();
 	
 	ofVec2f screenSize;
@@ -82,7 +86,6 @@ private:
 	
 	float zoomDiff;
 	
-	bool touching[MAX_TOUCHES];
 	ofVec2f lastTouch[MAX_TOUCHES];
 	
 	bool vFlip;	//of give you standard OF flipped y
@@ -92,5 +95,8 @@ private:
 	vector<int> touchIDOrder;
 
 	ofRectangle pViewport;
+
+	bool bTranslate;
 	
+	ofVec2f area;
 };
